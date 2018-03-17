@@ -8,4 +8,8 @@ public class Atm {
     public CreditCard getCreditCard() {
         return creditCard;
     }
+
+    public boolean removeCard() {
+        return false;
+    }
 }

@@ -11,4 +11,13 @@ public class AtmTest {
         atm.insertCard(creditCard);
         assertEquals(creditCard, atm.getCreditCard());
     }
+
+    @Test
+    public void testRemoveCreditCard(){
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm();
+        assertTrue(atm.removeCard());
+        assertEquals(null, atm.getCreditCard());
+    }
+
 }
