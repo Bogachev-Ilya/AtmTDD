@@ -84,4 +84,14 @@ public class AtmTest {
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.CANCEL, atm.atmMenu());
     }
+    
+    @Test
+    public void testIncorrectInput() throws UnsupportedEncodingException {
+        String mockInput5 = "5\n";
+        InputStream mockinputStream = new ByteArrayInputStream(mockInput5.getBytes(StandardCharsets.UTF_8.name()));
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm(mockinputStream);
+        atm.insertCard(creditCard);
+        assertEquals(null, atm.atmMenu());
+    }
 }
