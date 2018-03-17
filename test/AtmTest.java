@@ -20,4 +20,14 @@ public class AtmTest {
         assertEquals(null, atm.getCreditCard());
     }
 
+    @Test
+    public void testDepositMoney(){
+
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm();
+        atm.insertCard(creditCard);
+        atm.depositMoney(35);
+        assertEquals(35, atm.getCreditCard().getAmount());
+    }
+
 }

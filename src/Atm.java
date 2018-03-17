@@ -13,4 +13,7 @@ public class Atm {
         this.creditCard = null;
         return true;
     }
+
+    public void depositMoney(int i) {
+    }
 }
