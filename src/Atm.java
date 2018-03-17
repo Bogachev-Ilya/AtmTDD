@@ -1,18 +1,24 @@
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Scanner;
 
 public class Atm {
     private CreditCard creditCard;
-
+    private InputStream inputStream;
+    private Scanner scanner;
 
     public enum Menu{
         CHECKBALANCE
     }
 
     public Atm(){
+        this(System.in);
 
     }
 
     public Atm(InputStream mockinputStream) {
+        this.inputStream = mockinputStream;
+        scanner=new Scanner(mockinputStream);
     }
 
     public void insertCard(CreditCard creditCard) {
@@ -43,6 +49,11 @@ public class Atm {
     }
 
     public Menu atmMenu() {
+        String menuNumber=scanner.nextLine();
+        switch (Integer.valueOf(menuNumber)){
+            case 1:
+                return Menu.CHECKBALANCE;
+        }
         return null;
     }
 }

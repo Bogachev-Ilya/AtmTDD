@@ -53,7 +53,6 @@ public class AtmTest {
         CreditCard creditCard = new CreditCard(0);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
-        atm.atmMenu();
         assertEquals(Atm.Menu.CHECKBALANCE, atm.atmMenu());
     }
 
