@@ -8,7 +8,7 @@ public class Atm {
     private Scanner scanner;
 
     public enum Menu{
-        DEPOSIT, WITHDRAW, CHECKBALANCE
+        DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
     }
 
     public Atm(){
