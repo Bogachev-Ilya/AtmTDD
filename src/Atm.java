@@ -1,5 +1,19 @@
+import java.io.InputStream;
+
 public class Atm {
     private CreditCard creditCard;
+
+
+    public enum Menu{
+        CHECKBALANCE
+    }
+
+    public Atm(){
+
+    }
+
+    public Atm(InputStream mockinputStream) {
+    }
 
     public void insertCard(CreditCard creditCard) {
         this.creditCard = creditCard;
@@ -26,5 +40,9 @@ public class Atm {
             System.out.println("На карте недостаточно средств для снятия, пожалуйста уменьшите сумму и повторите запрос");
             return false;
         }
+    }
+
+    public Menu atmMenu() {
+        return null;
     }
 }

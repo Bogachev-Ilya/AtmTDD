@@ -1,5 +1,10 @@
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 import static org.junit.Assert.*;
 
 public class AtmTest {
@@ -39,6 +44,17 @@ public class AtmTest {
         atm.withdraw(40);
         assertEquals(60, atm.getCreditCard().getAmount());
         assertFalse( atm.withdraw(80));
+    }
+
+    @Test
+    public void testAtmMenu() throws UnsupportedEncodingException {
+        String mockInput1 = "1\n";
+        InputStream mockinputStream = new ByteArrayInputStream(mockInput1.getBytes(StandardCharsets.UTF_8.name()));
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm(mockinputStream);
+        atm.insertCard(creditCard);
+        atm.atmMenu();
+        assertEquals(Atm.Menu.CHECKBALANCE, atm.atmMenu());
     }
 
 }
