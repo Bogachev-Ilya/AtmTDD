@@ -30,4 +30,15 @@ public class AtmTest {
         assertEquals(35, atm.getCreditCard().getAmount());
     }
 
+    @Test
+    public void testWithdrawMoney(){
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm();
+        atm.insertCard(creditCard);
+        atm.depositMoney(100);
+        atm.withdraw(40);
+        assertEquals(60, atm.getCreditCard().getAmount());
+        assertFalse( atm.withdraw(80));
+    }
+
 }

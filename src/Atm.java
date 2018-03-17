@@ -17,4 +17,8 @@ public class Atm {
     public void depositMoney(int money) {
         this.creditCard.setAmount(money);
     }
+
+    public boolean withdraw(int money) {
+        return false;
+    }
 }
