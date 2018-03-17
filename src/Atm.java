@@ -57,6 +57,8 @@ public class Atm {
                 return Menu.DEPOSIT;
             case 3:
                 return Menu.WITHDRAW;
+            case 0:
+                return Menu.CANCEL;
         }
         return null;
     }
