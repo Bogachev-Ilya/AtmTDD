@@ -47,13 +47,22 @@ public class AtmTest {
     }
 
     @Test
-    public void testAtmMenu() throws UnsupportedEncodingException {
+    public void testAtmCheckBalanceMenu() throws UnsupportedEncodingException {
         String mockInput1 = "1\n";
         InputStream mockinputStream = new ByteArrayInputStream(mockInput1.getBytes(StandardCharsets.UTF_8.name()));
         CreditCard creditCard = new CreditCard(0);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.CHECKBALANCE, atm.atmMenu());
+    }
+    @Test
+    public void testAtmDepositMenu() throws UnsupportedEncodingException {
+        String mockInput2 = "2\n";
+        InputStream mockinputStream = new ByteArrayInputStream(mockInput2.getBytes(StandardCharsets.UTF_8.name()));
+        CreditCard creditCard = new CreditCard(0);
+        Atm atm = new Atm(mockinputStream);
+        atm.insertCard(creditCard);
+        assertEquals(Atm.Menu.DEPOSIT, atm.atmMenu());
     }
 
 }
