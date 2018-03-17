@@ -53,6 +53,8 @@ public class Atm {
         switch (Integer.valueOf(menuNumber)){
             case 1:
                 return Menu.CHECKBALANCE;
+            case 2:
+                return Menu.DEPOSIT;
         }
         return null;
     }
