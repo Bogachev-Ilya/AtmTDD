@@ -10,6 +10,7 @@ public class Atm {
     }
 
     public boolean removeCard() {
-        return false;
+        this.creditCard = null;
+        return true;
     }
 }
