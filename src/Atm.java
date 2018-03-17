@@ -19,6 +19,12 @@ public class Atm {
     }
 
     public boolean withdraw(int money) {
-        return false;
+        if (this.creditCard.getAmount() >= money) {
+            this.creditCard.setAmount(this.creditCard.getAmount() - money);
+            return true;
+        } else {
+            System.out.println("На карте недостаточно средств для снятия, пожалуйста уменьшите сумму и повторите запрос");
+            return false;
+        }
     }
 }
