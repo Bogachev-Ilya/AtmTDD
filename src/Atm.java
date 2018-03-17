@@ -14,6 +14,7 @@ public class Atm {
         return true;
     }
 
-    public void depositMoney(int i) {
+    public void depositMoney(int money) {
+        this.creditCard.setAmount(money);
     }
 }
