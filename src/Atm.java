@@ -55,6 +55,8 @@ public class Atm {
                 return Menu.CHECKBALANCE;
             case 2:
                 return Menu.DEPOSIT;
+            case 3:
+                return Menu.WITHDRAW;
         }
         return null;
     }
