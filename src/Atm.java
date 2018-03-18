@@ -20,7 +20,7 @@ public class Atm {
 
     public void init() {
         User user = new User();
-        user.setName("TestName");
+        user.setName("Petrov");
         Bank bank = new Bank();
         bank.setName(Bank.List.VTB);
         user.setBanks(Bank.List.VTB);
@@ -30,9 +30,9 @@ public class Atm {
     }
 
     public void start() {
-        this.insertCard(creditCard);
-        if(this.checkPassword()){
-            this.startWork();
+        insertCard(creditCard);
+        if(checkPassword()){
+            startWork();
         }
     }
 
@@ -41,7 +41,7 @@ public class Atm {
         while (flag) {
             switch (atmMenu()) {
                 case CHECKBALANCE:
-                    this.getCreditCard().getAmount();
+                    System.out.println("Баланс на карте: " + this.getCreditCard().getAmount());
                     continue;
                 case DEPOSIT:
                     System.out.println("Введите сумму внесения");
