@@ -94,4 +94,15 @@ public class AtmTest {
        atm.insertCard(creditCard);
        assertTrue(atm.checkPassword());
    }
+
+   @Test
+    public void testIncorrectPasswordthreetimes() throws UnsupportedEncodingException {
+       String mockInput = "2222\n4567\n9873";
+       InputStream mockinputStream = new ByteArrayInputStream(mockInput.getBytes(StandardCharsets.UTF_8.name()));
+       CreditCard creditCard = new CreditCard(0, 1234);
+       Atm atm = new Atm((mockinputStream));
+       atm.insertCard(creditCard);
+       assertFalse(atm.checkPassword());
+       assertEquals(null, atm.getCreditCard());
+   }
 }
