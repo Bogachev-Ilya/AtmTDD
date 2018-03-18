@@ -11,7 +11,7 @@ public class AtmTest {
 
     @Test
     public void testInsertCreditCard(){
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
         assertEquals(creditCard, atm.getCreditCard());
@@ -19,7 +19,7 @@ public class AtmTest {
 
     @Test
     public void testRemoveCreditCard(){
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         assertTrue(atm.removeCard());
         assertEquals(null, atm.getCreditCard());
@@ -28,7 +28,7 @@ public class AtmTest {
     @Test
     public void testDepositMoney(){
 
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
         atm.depositMoney(35);
@@ -37,7 +37,7 @@ public class AtmTest {
 
     @Test
     public void testWithdrawMoney(){
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
         atm.depositMoney(100);
@@ -50,7 +50,7 @@ public class AtmTest {
     public void testAtmCheckBalanceMenu() throws UnsupportedEncodingException {
         String mockInput1 = "1\n";
         InputStream mockinputStream = new ByteArrayInputStream(mockInput1.getBytes(StandardCharsets.UTF_8.name()));
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.CHECKBALANCE, atm.atmMenu());
@@ -59,7 +59,7 @@ public class AtmTest {
     public void testAtmDepositMenu() throws UnsupportedEncodingException {
         String mockInput2 = "2\n";
         InputStream mockinputStream = new ByteArrayInputStream(mockInput2.getBytes(StandardCharsets.UTF_8.name()));
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.DEPOSIT, atm.atmMenu());
@@ -69,7 +69,7 @@ public class AtmTest {
     public void testAtmWithdrawMenu() throws UnsupportedEncodingException {
         String mockInput3 = "3\n";
         InputStream mockinputStream = new ByteArrayInputStream(mockInput3.getBytes(StandardCharsets.UTF_8.name()));
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.WITHDRAW, atm.atmMenu());
@@ -79,19 +79,19 @@ public class AtmTest {
     public void testCancelMenu () throws UnsupportedEncodingException {
         String mockInput4 = "0\n";
         InputStream mockinputStream = new ByteArrayInputStream(mockInput4.getBytes(StandardCharsets.UTF_8.name()));
-        CreditCard creditCard = new CreditCard(0);
+        CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(Atm.Menu.CANCEL, atm.atmMenu());
     }
     
-    @Test
-    public void testIncorrectInput() throws UnsupportedEncodingException {
-        String mockInput5 = "5\n";
-        InputStream mockinputStream = new ByteArrayInputStream(mockInput5.getBytes(StandardCharsets.UTF_8.name()));
-        CreditCard creditCard = new CreditCard(0);
-        Atm atm = new Atm(mockinputStream);
-        atm.insertCard(creditCard);
-        assertEquals(null, atm.atmMenu());
-    }
+   @Test
+    public void testPassword() throws UnsupportedEncodingException {
+       String mockInput = "0\n";
+       InputStream mockinputStream = new ByteArrayInputStream(mockInput.getBytes(StandardCharsets.UTF_8.name()));
+       CreditCard creditCard = new CreditCard(0, 1234);
+       Atm atm = new Atm((mockinputStream));
+       atm.insertCard(creditCard);
+       assertTrue(atm.checkPassword());
+   }
 }

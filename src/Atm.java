@@ -7,6 +7,10 @@ public class Atm {
     private InputStream inputStream;
     private Scanner scanner;
 
+    public boolean checkPassword() {
+        return false;
+    }
+
     public enum Menu{
         DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
     }
@@ -49,17 +53,23 @@ public class Atm {
     }
 
     public Menu atmMenu() {
-        String menuNumber=scanner.nextLine();
-        switch (Integer.valueOf(menuNumber)){
-            case 1:
-                return Menu.CHECKBALANCE;
-            case 2:
-                return Menu.DEPOSIT;
-            case 3:
-                return Menu.WITHDRAW;
-            case 0:
-                return Menu.CANCEL;
+        while (true) {
+            System.out.println("Введите номер меню:\n 1 - проверить баланс\n 2 - внести наличные\n 3 - снять наличные\n 0 - вернуть карту");
+            String menuNumber = scanner.nextLine();
+            if(Integer.valueOf(menuNumber)<0||Integer.valueOf(menuNumber)>3){
+                continue;
+            }
+            switch (Integer.valueOf(menuNumber)) {
+                case 1:
+                    return Menu.CHECKBALANCE;
+                case 2:
+                    return Menu.DEPOSIT;
+                case 3:
+                    return Menu.WITHDRAW;
+                case 0:
+                    return Menu.CANCEL;
+            }
+            return null;
         }
-        return null;
     }
 }
