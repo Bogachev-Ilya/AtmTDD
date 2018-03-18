@@ -1,5 +1,4 @@
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Scanner;
 
 public class Atm {
@@ -7,10 +6,11 @@ public class Atm {
     private InputStream inputStream;
     private Scanner scanner;
     private String bankName;
+    private boolean flag=true;
 
     public Atm(Bank.List bankName) {
         this(System.in);
-        this.bankName =bankName.toString();
+        this.bankName = bankName.toString();
 
     }
 
@@ -25,39 +25,64 @@ public class Atm {
         bank.setName(Bank.List.VTB);
         user.setBanks(Bank.List.VTB);
         long accountNumber = 1234567890L;
-        int password =1234;
-        creditCard= bank.emittedCard(user, accountNumber, password);
+        int password = 1234;
+        creditCard = bank.emittedCard(user, accountNumber, password);
     }
 
     public void start() {
         this.insertCard(creditCard);
+        if(this.checkPassword()){
+            this.startWork();
+        }
     }
 
-    public void StartWork() {
+    public void startWork() {
+
+        while (flag) {
+            switch (atmMenu()) {
+                case CHECKBALANCE:
+                    this.getCreditCard().getAmount();
+                    continue;
+                case DEPOSIT:
+                    System.out.println("Введите сумму внесения");
+                    this.depositMoney(Integer.valueOf(scanner.nextLine()));
+                    continue;
+                case WITHDRAW:
+                    System.out.println("Введите сумму снятия");
+                    if (this.withdraw(Integer.valueOf(scanner.nextLine()))) {
+                        continue;
+                    }
+                case CANCEL:
+                    removeCard();
+                    flag=false;
+                    break;
+            }
+        }
     }
 
 
-    public enum Menu{
+    public enum Menu {
         DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
     }
 
-    public Atm(){
+    public Atm() {
         this(System.in);
 
     }
 
     public Atm(InputStream mockinputStream) {
         this.inputStream = mockinputStream;
-        scanner=new Scanner(mockinputStream);
+        scanner = new Scanner(mockinputStream);
     }
+
     public boolean checkPassword() {
-        int countTries =0;
-        while (countTries!=3) {
+        int countTries = 0;
+        while (countTries != 3) {
             System.out.println("Введите пароль: ");
             String password = scanner.nextLine();
             if (Integer.valueOf(password) == creditCard.getPassword()) {
                 return true;
-            }else{
+            } else {
                 System.out.println("Пароль не верен");
                 countTries++;
                 continue;
@@ -66,6 +91,7 @@ public class Atm {
         removeCard();
         return false;
     }
+
     public void insertCard(CreditCard creditCard) {
         this.creditCard = creditCard;
     }
@@ -97,7 +123,7 @@ public class Atm {
         while (true) {
             System.out.println("Введите номер меню:\n 1 - проверить баланс\n 2 - внести наличные\n 3 - снять наличные\n 0 - вернуть карту");
             String menuNumber = scanner.nextLine();
-            if(Integer.valueOf(menuNumber)<0||Integer.valueOf(menuNumber)>3){
+            if (Integer.valueOf(menuNumber) < 0 || Integer.valueOf(menuNumber) > 3) {
                 continue;
             }
             switch (Integer.valueOf(menuNumber)) {
@@ -113,5 +139,4 @@ public class Atm {
             return null;
         }
     }
-
 }

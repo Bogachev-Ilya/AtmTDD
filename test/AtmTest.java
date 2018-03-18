@@ -27,7 +27,6 @@ public class AtmTest {
 
     @Test
     public void testDepositMoney(){
-
         CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
@@ -120,7 +119,7 @@ public class AtmTest {
    }
    @Test
     public void testATM() throws UnsupportedEncodingException {
-       String mockInput = "1234\n1\n2\n400\n3\n200\n1\n0";
+       String mockInput = "1234\n1\n2\n400\n3\n200\n1\n0\n";
        InputStream mockinputStream = new ByteArrayInputStream(mockInput.getBytes(StandardCharsets.UTF_8.name()));
        User user = new User();
        user.setName("TestName");
@@ -133,12 +132,10 @@ public class AtmTest {
        Atm atm = new Atm(mockinputStream);
        atm.insertCard(creditCard);
        assertTrue(atm.checkPassword());
-       atm.StartWork();
-       assertEquals(0, atm.getCreditCard().getAmount());
-       assertEquals(200, atm.getCreditCard().getAmount());
+       atm.startWork();
        assertEquals(null, atm.getCreditCard());
+       atm.insertCard(creditCard);
+       assertEquals(200, atm.getCreditCard().getAmount());
 
    }
-
-
 }
