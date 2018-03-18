@@ -7,14 +7,7 @@ public class Atm {
     private InputStream inputStream;
     private Scanner scanner;
 
-    public boolean checkPassword() {
-        System.out.println("Введите пароль: ");
-        String password = scanner.nextLine();
-        if (Integer.valueOf(password)==creditCard.getPassword()){
-            return true;
-        }
-        return false;
-    }
+
 
     public enum Menu{
         DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
@@ -29,7 +22,22 @@ public class Atm {
         this.inputStream = mockinputStream;
         scanner=new Scanner(mockinputStream);
     }
-
+    public boolean checkPassword() {
+        int countTries =0;
+        while (countTries!=3) {
+            System.out.println("Введите пароль: ");
+            String password = scanner.nextLine();
+            if (Integer.valueOf(password) == creditCard.getPassword()) {
+                return true;
+            }else{
+                System.out.println("Пароль не верен");
+                countTries++;
+                continue;
+            }
+        }
+        removeCard();
+        return false;
+    }
     public void insertCard(CreditCard creditCard) {
         this.creditCard = creditCard;
     }
