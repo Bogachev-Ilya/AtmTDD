@@ -10,6 +10,7 @@ public class Atm {
 
     public Atm(Bank.List bankName) {
         this(System.in);
+        this.bankName =bankName.toString();
 
     }
 
@@ -94,4 +95,5 @@ public class Atm {
             return null;
         }
     }
+
 }
