@@ -6,7 +6,16 @@ public class Atm {
     private CreditCard creditCard;
     private InputStream inputStream;
     private Scanner scanner;
+    private String bankName;
 
+    public Atm(Bank.List bankName) {
+        this(System.in);
+
+    }
+
+    public String getBankName() {
+        return bankName;
+    }
 
 
     public enum Menu{

@@ -105,4 +105,18 @@ public class AtmTest {
        assertFalse(atm.checkPassword());
        assertEquals(null, atm.getCreditCard());
    }
+   @Test
+    public void testInitAtm(){
+        User user = new User();
+        user.setName("TestName");
+        Bank bank = new Bank();
+        bank.setName(Bank.List.VTB);
+        user.setBanks(Bank.List.VTB);
+        long accountNumber = 1234567890L;
+        int password =1234;
+        bank.emittedCard(user, accountNumber,password);
+        Atm atm = new Atm(Bank.List.VTB);
+        assertEquals("VTB", atm.getBankName());
+   }
+
 }
