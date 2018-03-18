@@ -18,6 +18,24 @@ public class Atm {
         return bankName;
     }
 
+    public void init() {
+        User user = new User();
+        user.setName("TestName");
+        Bank bank = new Bank();
+        bank.setName(Bank.List.VTB);
+        user.setBanks(Bank.List.VTB);
+        long accountNumber = 1234567890L;
+        int password =1234;
+        creditCard= bank.emittedCard(user, accountNumber, password);
+    }
+
+    public void start() {
+        this.insertCard(creditCard);
+    }
+
+    public void StartWork() {
+    }
+
 
     public enum Menu{
         DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
