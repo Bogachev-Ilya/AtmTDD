@@ -1,10 +1,15 @@
 public class CreditCard {
     private int amount;
     private int password;
+    private long accountNumber;
 
     public CreditCard(int amount, int password) {
         this.password =password;
         this.amount = amount;
+    }
+
+    public CreditCard(long accoutNumber, int password) {
+        
     }
 
     public int getAmount() {
@@ -21,5 +26,9 @@ public class CreditCard {
 
     public void setPassword(int password){
         this.password =password;
+    }
+
+    public long getAccountNumber() {
+        return accountNumber;
     }
 }

@@ -1,4 +1,4 @@
-import java.util.Map;
+
 
 public class Bank {
     private String name;
@@ -14,6 +14,10 @@ public class Bank {
 
     public User getUser(String name) {
         return user;
+    }
+
+    public CreditCard emittedCard(User user) {
+        return null;
     }
 
     public enum List {
