@@ -8,6 +8,11 @@ public class Atm {
     private Scanner scanner;
 
     public boolean checkPassword() {
+        System.out.println("Введите пароль: ");
+        String password = scanner.nextLine();
+        if (Integer.valueOf(password)==creditCard.getPassword()){
+            return true;
+        }
         return false;
     }
 

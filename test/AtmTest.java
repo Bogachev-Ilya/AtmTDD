@@ -87,7 +87,7 @@ public class AtmTest {
     
    @Test
     public void testPassword() throws UnsupportedEncodingException {
-       String mockInput = "0\n";
+       String mockInput = "1234\n";
        InputStream mockinputStream = new ByteArrayInputStream(mockInput.getBytes(StandardCharsets.UTF_8.name()));
        CreditCard creditCard = new CreditCard(0, 1234);
        Atm atm = new Atm((mockinputStream));
