@@ -16,8 +16,8 @@ public class Bank {
         return user;
     }
 
-    public CreditCard emittedCard(User user) {
-        return null;
+    public CreditCard emittedCard(User user, long accountNumber, int password) {
+        return new CreditCard(accountNumber, password);
     }
 
     public enum List {

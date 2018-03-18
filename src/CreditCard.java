@@ -9,7 +9,9 @@ public class CreditCard {
     }
 
     public CreditCard(long accoutNumber, int password) {
-        
+        this.accountNumber =accoutNumber;
+        this.password=password;
+        setAmount(0);
     }
 
     public int getAmount() {

@@ -23,8 +23,9 @@ public class BankTest {
         bank.setUser(user);
         int password = 1234;
         long accoutNumber = 3456_7549_3452L;
-        CreditCard creditCard = bank.emittedCard(user);
+        CreditCard creditCard = bank.emittedCard(user, accoutNumber, password);
         assertEquals(password, creditCard.getPassword());
         assertEquals(accoutNumber, creditCard.getAccountNumber());
+        assertEquals(0, creditCard.getAmount());
     }
 }
