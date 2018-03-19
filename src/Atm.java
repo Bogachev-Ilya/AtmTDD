@@ -95,7 +95,20 @@ public class Atm {
     }
 
     public void insertCard(CreditCard creditCard) {
-        this.creditCard = creditCard;
+        if (getCreditCard()==null){
+            this.creditCard = creditCard;
+        }else {
+            System.out.println("Карта уже вставлена, введите 0 чтобы извлечть карту: ");
+            while (true){
+                String number =scanner.nextLine();
+                if (Integer.valueOf(number)==0){
+                    removeCard();
+                    break;
+                }else {
+                    continue;
+                }
+            }
+        }
     }
 
     public CreditCard getCreditCard() {
