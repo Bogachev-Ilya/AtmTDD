@@ -115,13 +115,13 @@ public class Atm {
         return creditCard;
     }
 
-    public boolean removeCard() {
+    public void removeCard() {
         this.creditCard = null;
-        return true;
     }
 
-    public void depositMoney(int money) {
+    public boolean depositMoney(int money) {
         this.creditCard.setAmount(money);
+        return false;
     }
 
     public boolean withdraw(int money) {

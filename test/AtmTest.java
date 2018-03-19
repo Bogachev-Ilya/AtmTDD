@@ -26,7 +26,6 @@ public class AtmTest {
     public void testRemoveCreditCard(){
         CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
-        assertTrue(atm.removeCard());
         assertEquals(null, atm.getCreditCard());
     }
 
@@ -35,8 +34,9 @@ public class AtmTest {
         CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
-        atm.depositMoney(35);
+        assertTrue(atm.depositMoney(35));
         assertEquals(35, atm.getCreditCard().getAmount());
+        assertFalse(atm.depositMoney(-45));
     }
 
     @Test
