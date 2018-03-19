@@ -8,7 +8,10 @@ public class UserTest {
     public void testUser(){
         User user = new User();
         user.setName("Petrov");
+        String name ="Petrov";
         user.setBanks(Bank.List.VTB);
+        assertEquals(name, user.getName());
+        assertEquals(Bank.List.VTB, user.getBanks());
     }
 
 }

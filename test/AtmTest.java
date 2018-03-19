@@ -10,11 +10,16 @@ import static org.junit.Assert.*;
 public class AtmTest {
 
     @Test
-    public void testInsertCreditCard(){
+    public void testInsertCreditCard() throws UnsupportedEncodingException {
+        String mockInput1 = "0\n";
+        InputStream mockinputStream = new ByteArrayInputStream(mockInput1.getBytes(StandardCharsets.UTF_8.name()));
         CreditCard creditCard = new CreditCard(0, 1234);
-        Atm atm = new Atm();
+        Atm atm = new Atm(mockinputStream);
         atm.insertCard(creditCard);
         assertEquals(creditCard, atm.getCreditCard());
+        atm.insertCard(creditCard);
+        assertEquals(null,atm.getCreditCard());
+
     }
 
     @Test

@@ -28,4 +28,8 @@ public class User {
     public int hashCode() {
         return Objects.hash(name, bank);
     }
+
+    public Bank.List getBanks() {
+        return bank;
+    }
 }

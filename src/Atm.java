@@ -1,4 +1,5 @@
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Scanner;
 
 public class Atm {
@@ -7,6 +8,16 @@ public class Atm {
     private Scanner scanner;
     private String bankName;
     private boolean flag=true;
+
+    public Atm() {
+        this(System.in);
+
+    }
+
+    public Atm(InputStream mockinputStream) {
+        this.inputStream = mockinputStream;
+        scanner = new Scanner(mockinputStream);
+    }
 
     public Atm(Bank.List bankName) {
         this(System.in);
@@ -20,6 +31,7 @@ public class Atm {
 
     public void init() {
         User user = new User();
+
         user.setName("Petrov");
         Bank bank = new Bank();
         bank.setName(Bank.List.VTB);
@@ -63,16 +75,6 @@ public class Atm {
 
     public enum Menu {
         DEPOSIT, WITHDRAW, CANCEL, CHECKBALANCE
-    }
-
-    public Atm() {
-        this(System.in);
-
-    }
-
-    public Atm(InputStream mockinputStream) {
-        this.inputStream = mockinputStream;
-        scanner = new Scanner(mockinputStream);
     }
 
     public boolean checkPassword() {
@@ -138,5 +140,19 @@ public class Atm {
             }
             return null;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Atm atm = (Atm) o;
+        return Objects.equals(creditCard, atm.creditCard) && Objects.equals(bankName, atm.bankName);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(creditCard, bankName);
     }
 }
