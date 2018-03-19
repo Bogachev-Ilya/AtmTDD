@@ -120,8 +120,12 @@ public class Atm {
     }
 
     public boolean depositMoney(int money) {
-        this.creditCard.setAmount(money);
-        return false;
+        if (money>=0){
+           this.creditCard.setAmount(money);
+            return true;
+        }else {
+          return false;
+        }
     }
 
     public boolean withdraw(int money) {
