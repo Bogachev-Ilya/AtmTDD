@@ -1,3 +1,5 @@
+package model;
+
 public class CreditCard {
     private int amount;
     private int password;

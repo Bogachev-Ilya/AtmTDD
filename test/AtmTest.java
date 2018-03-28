@@ -1,6 +1,9 @@
+import model.Atm;
+import model.Bank;
+import model.CreditCard;
+import model.User;
 import org.junit.Test;
 
-import java.awt.event.InputEvent;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;

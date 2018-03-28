@@ -1,3 +1,5 @@
+package model;
+
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Scanner;
@@ -96,6 +98,15 @@ public class Atm {
                     continue;
                 }
             }
+        }
+    }
+    public boolean insertCardGui(CreditCard creditCard){
+        if (getCreditCard()==null){
+            this.creditCard = creditCard;
+            return true;
+        }else {
+            System.out.println("Карта уже вставлена, введите 0 чтобы извлечть карту: ");
+            return false;
         }
     }
 

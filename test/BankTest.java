@@ -1,3 +1,6 @@
+import model.Bank;
+import model.CreditCard;
+import model.User;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
