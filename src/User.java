@@ -3,6 +3,23 @@ import java.util.Objects;
 public class User {
     private String name;
     private Bank.List bank;
+    private CreditCard creditCard;
+
+    public Bank.List getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank.List bank) {
+        this.bank = bank;
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
+    }
 
     public void setName(String name) {
         this.name = name;

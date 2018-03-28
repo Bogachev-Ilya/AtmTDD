@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.awt.event.InputEvent;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -113,12 +114,11 @@ public class AtmTest {
     public void testInitAtm(){
         User user = new User();
         user.setName("TestName");
-        Bank bank = new Bank();
-        bank.setName(Bank.List.VTB);
+        Bank bank = new Bank(Bank.List.VTB);
         user.setBanks(Bank.List.VTB);
         long accountNumber = 1234567890L;
         int password =1234;
-        bank.emittedCard(user, accountNumber,password);
+        bank.emittedCard();
         Atm atm = new Atm(Bank.List.VTB);
         assertEquals("VTB", atm.getBankName());
    }
@@ -128,12 +128,14 @@ public class AtmTest {
        InputStream mockinputStream = new ByteArrayInputStream(mockInput.getBytes(StandardCharsets.UTF_8.name()));
        User user = new User();
        user.setName("TestName");
-       Bank bank = new Bank();
-       bank.setName(Bank.List.VTB);
+       Bank bank = new Bank(Bank.List.VTB);
        user.setBanks(Bank.List.VTB);
        long accountNumber = 1234567890L;
        int password =1234;
-       CreditCard creditCard =  bank.emittedCard(user, accountNumber,password);
+       CreditCard creditCard =  bank.emittedCard();
+       creditCard.setPassword(password);
+       creditCard.setAmount(0);
+       creditCard.setAccountNumber(accountNumber);
        Atm atm = new Atm(mockinputStream);
        atm.insertCard(creditCard);
        assertTrue(atm.checkPassword());

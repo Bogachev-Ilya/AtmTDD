@@ -1,7 +1,16 @@
 public class CreditCard {
     private int amount;
     private int password;
+
+    public void setAccountNumber(long accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
     private long accountNumber;
+
+    public CreditCard(){
+
+    }
 
     public CreditCard(int amount, int password) {
         this.password =password;

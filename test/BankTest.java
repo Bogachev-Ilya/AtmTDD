@@ -6,8 +6,7 @@ public class BankTest {
 
     @Test
     public void testCreateBank(){
-        Bank bank = new Bank();
-        bank.setName(Bank.List.SBERBANK);
+        Bank bank = new Bank(Bank.List.SBERBANK);
         User user = new User();
         user.setName("Petrov");
         bank.setUser(user);
@@ -16,14 +15,16 @@ public class BankTest {
     }
     @Test
     public void testEmittedCard(){
-        Bank bank = new Bank();
-        bank.setName(Bank.List.SBERBANK);
+        Bank bank = new Bank(Bank.List.SBERBANK);
         User user = new User();
         user.setName("Petrov");
         bank.setUser(user);
         int password = 1234;
         long accoutNumber = 3456_7549_3452L;
-        CreditCard creditCard = bank.emittedCard(user, accoutNumber, password);
+        CreditCard creditCard = bank.emittedCard();
+        creditCard.setAccountNumber(accoutNumber);
+        creditCard.setAmount(0);
+        creditCard.setPassword(password);
         assertEquals(password, creditCard.getPassword());
         assertEquals(accoutNumber, creditCard.getAccountNumber());
         assertEquals(0, creditCard.getAmount());
