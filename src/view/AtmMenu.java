@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class AtmMenu extends JFrame {
+       private JButton deposit = new JButton("Deposit money");
+        private JButton withdraw = new JButton("Withdraw");
 
     public void showMenu (){
         setTitle("Main menu");
@@ -19,13 +21,11 @@ public class AtmMenu extends JFrame {
         GridLayout gridLayout = new GridLayout(2,2);
         atmMenu.setLayout(gridLayout);
         JButton checkBalance = new JButton("Check balance");
-        JButton deposit = new JButton("Deposit money");
-        JButton withdraw = new JButton("Withdraw");
         JButton cancel = new JButton("Cancel");
         checkBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int balance =  Controller.getInstance().getBalance();
+                double balance =  Controller.getInstance().getBalance();
                 JOptionPane jOptionPane = new JOptionPane();
                 jOptionPane.showConfirmDialog(null, "Balance on card:\n "+balance, "Balance", jOptionPane.PLAIN_MESSAGE);
             }
@@ -42,7 +42,6 @@ public class AtmMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 windowEnterAmount();
-
             }
         });
 
@@ -66,11 +65,13 @@ public class AtmMenu extends JFrame {
         windowForWithdraw.setTitle("Enter Amount");
         windowForWithdraw.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
-        JTextField dispFieldText = new JTextField("0");
-        dispFieldText.setEnabled(false);
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
-        panel.add("North", dispFieldText);
+        /**выравниваем поле ввода по провую сторону*/
+        JFormattedTextField dispFormattedTextField =new JFormattedTextField();
+        dispFormattedTextField.setHorizontalAlignment(SwingConstants.RIGHT);
+        dispFormattedTextField.setEnabled(false);
+        panel.add("North", dispFormattedTextField);
         JPanel buttonsPanel = new JPanel();
         GridLayout gridLayout = new GridLayout(4, 3);
         buttonsPanel.setLayout(gridLayout);
@@ -81,6 +82,7 @@ public class AtmMenu extends JFrame {
         buttons.add(new JButton("0"));
         JButton cancel = new JButton("Cancel");
         JButton delete = new JButton("Delete");
+        JButton enter = new JButton("Enter");
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,6 +92,7 @@ public class AtmMenu extends JFrame {
         buttons.add(cancel);
         buttons.add(delete);
 
+        windowForWithdraw.add("South", enter);
         for (int i = 0; i <buttons.size()-2 ; i++){
             int finalI = i;
             buttons.get(i).addActionListener(new ActionListener() {
@@ -97,17 +100,26 @@ public class AtmMenu extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     String cmd =e.getActionCommand();
                     if ('0'<=cmd.charAt(0)&&cmd.charAt(0)<='9'){
-                        dispFieldText.setText(dispFieldText.getText()+cmd);
+                        dispFormattedTextField.setText(dispFormattedTextField.getText()+cmd);
                     }
-                    JButton clickedButton = (JButton) e.getSource();
                     double displayValue = 0;
-                    String dispVal =  dispFieldText.getText();
-                    if (!"".equals(dispFieldText)){
+                    String dispVal =  dispFormattedTextField.getText();
+                    if (!"".equals(dispFormattedTextField)){
                         displayValue= Double.parseDouble(dispVal);
                 }
-                    /*String clickedButtonLabel = clickedButton.getText();
-                    String line =e.getActionCommand();
-                    dispFieldText.setText(dispVal +line);*/
+                    /**ввести значение и передать его в модель*/
+                    enter.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            if (!"".equals(dispFormattedTextField)) {
+                                Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
+                                windowForWithdraw.setVisible(false);
+                            }
+                        }
+                    });
+                    /*если окно вызвано из меню снять деньги, значение передается в метод withdraw*/
+
+
 
             }
         });}
@@ -115,10 +127,9 @@ public class AtmMenu extends JFrame {
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!dispFieldText.getText().equals("")){
-                String temp = dispFieldText.getText();
-                dispFieldText.setText(temp.substring(0, temp.length()-1));
-
+                if(!dispFormattedTextField.getText().equals("")){
+                String temp = dispFormattedTextField.getText();
+                    dispFormattedTextField.setText(temp.substring(0, temp.length()-1));
                 }
             }
         });

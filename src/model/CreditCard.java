@@ -1,7 +1,7 @@
 package model;
 
 public class CreditCard {
-    private int amount;
+    private double amount;
     private int password;
 
     public void setAccountNumber(long accountNumber) {
@@ -14,7 +14,7 @@ public class CreditCard {
 
     }
 
-    public CreditCard(int amount, int password) {
+    public CreditCard(double amount, int password) {
         this.password =password;
         this.amount = amount;
     }
@@ -25,11 +25,11 @@ public class CreditCard {
         setAmount(0);
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

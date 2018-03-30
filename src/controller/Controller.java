@@ -39,8 +39,12 @@ public  class Controller {
         }
     }
 
-    public int getBalance() {
-        int amount = bank.getCreditCard().getAmount();
+    public double getBalance() {
+        double amount = bank.getCreditCard().getAmount();
         return amount;
+    }
+
+    public void setAmount(double amount) {
+        bank.getCreditCard().setAmount(amount);
     }
 }
