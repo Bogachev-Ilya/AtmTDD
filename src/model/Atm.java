@@ -131,7 +131,7 @@ public class Atm {
         if (this.creditCard.getAmount() >= money) {
             this.creditCard.setAmount(this.creditCard.getAmount() - money);
             return true;
-        }
+        }else
             return false;
 
     }

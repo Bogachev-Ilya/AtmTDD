@@ -11,8 +11,14 @@ import java.util.ArrayList;
 public class AtmMenu extends JFrame {
     private JButton deposit = new JButton("Deposit money");
     private JButton withdraw = new JButton("Withdraw");
-    /**слвжит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег*/
-    public enum Menu{WITHDRAW, DEPOSIT}
+
+    /**
+     * слвжит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
+     */
+    public enum Menu {
+        WITHDRAW, DEPOSIT
+    }
+
     public void showMenu() {
         setTitle("Main menu");
         setLocationRelativeTo(null);
@@ -114,20 +120,23 @@ public class AtmMenu extends JFrame {
                     enter.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            if (!"".equals(dispFormattedTextField)) {
-                                /**если выбрано меню внести наличные, то передать значение на счет*/
-                                if(Controller.getInstance().getMenu()==Menu.DEPOSIT){
+                            /**если выбрано меню внести наличные, то передать значение на счет*/
+                            switch (Controller.getInstance().getMenu()) {
+                                case DEPOSIT:
                                     Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
                                     windowForWithdraw.setVisible(false);
-                                }else {
-                                    if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispFormattedTextField.getText()))){
-                                        return;
-                                    }else {
-                                        JOptionPane jOptionPane = new JOptionPane();
-                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance()+ "", "Balance", jOptionPane.PLAIN_MESSAGE);
+                                    break;
+                                case WITHDRAW:
+                                    if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispVal))) {
+                                        windowForWithdraw.setVisible(false);
                                         dispFormattedTextField.setText("0");
+                                        break;
+                                    } else {
+                                        JOptionPane jOptionPane = new JOptionPane();
+                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
+                                        dispFormattedTextField.setText("0");
+                                        break;
                                     }
-                                }
                             }
                         }
                     });
@@ -162,7 +171,13 @@ public class AtmMenu extends JFrame {
         insertCard.setLocationRelativeTo(null);
         JPanel card = new JPanel();
         insertCard.add("Center", card);
-        JButton button = new JButton("Insert Card");
+        JButton button = new JButton();
+        ImageIcon imageIcon = new ImageIcon("res/creditCard.png");
+        button.setIcon(imageIcon);
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
+        insertCard.setPreferredSize(new Dimension(imageIcon.getIconWidth(), imageIcon.getIconHeight()));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -172,7 +187,7 @@ public class AtmMenu extends JFrame {
             }
         });
         card.add("Center", button);
-        insertCard.setVisible(true);
         insertCard.pack();
+        insertCard.setVisible(true);
     }
 }
