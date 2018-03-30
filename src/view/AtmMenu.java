@@ -10,14 +10,14 @@ import java.util.ArrayList;
 
 public class AtmMenu extends JFrame {
 
-
     public void showMenu (){
         setTitle("Main menu");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel atmMenu = new JPanel();
         add(atmMenu);
-        GridLayout gridLayout = new GridLayout();
+        GridLayout gridLayout = new GridLayout(2,2);
+        atmMenu.setLayout(gridLayout);
         JButton checkBalance = new JButton("Check balance");
         JButton deposit = new JButton("Deposit money");
         JButton withdraw = new JButton("Withdraw");
@@ -27,21 +27,29 @@ public class AtmMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int balance =  Controller.getInstance().getBalance();
                 JOptionPane jOptionPane = new JOptionPane();
-                jOptionPane.showConfirmDialog(null, "Your balance on card:\n "+balance, "Balance", jOptionPane.PLAIN_MESSAGE);
+                jOptionPane.showConfirmDialog(null, "Balance on card:\n "+balance, "Balance", jOptionPane.PLAIN_MESSAGE);
             }
         });
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Controller.getInstance().getAtm().removeCard();
-                System.out.println(Controller.getInstance().getAtm().getCreditCard());
+                setVisible(false);
+                insertCardWindow();
             }
         });
         withdraw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                openWindowForWithdraw();
+                windowEnterAmount();
 
+            }
+        });
+
+        deposit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                windowEnterAmount();
             }
         });
         atmMenu.add(checkBalance);
@@ -52,15 +60,17 @@ public class AtmMenu extends JFrame {
         setVisible(true);
     }
 
-    private void openWindowForWithdraw() {
+    private void windowEnterAmount() {
         JFrame windowForWithdraw = new JFrame();
+        windowForWithdraw.setFocusable(true);
         windowForWithdraw.setTitle("Enter Amount");
         windowForWithdraw.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
-        JTextArea jTextArea = new JTextArea("Text");
+        JTextField dispFieldText = new JTextField("0");
+        dispFieldText.setEnabled(false);
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
-        panel.add("North", jTextArea);
+        panel.add("North", dispFieldText);
         JPanel buttonsPanel = new JPanel();
         GridLayout gridLayout = new GridLayout(4, 3);
         buttonsPanel.setLayout(gridLayout);
@@ -69,8 +79,49 @@ public class AtmMenu extends JFrame {
             buttons.add(new JButton(String.valueOf(i)));
         }
         buttons.add(new JButton("0"));
-        buttons.add(new JButton("Delete"));
-        buttons.add(new JButton("Cancel"));
+        JButton cancel = new JButton("Cancel");
+        JButton delete = new JButton("Delete");
+        cancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                windowForWithdraw.setVisible(false);
+            }
+        });
+        buttons.add(cancel);
+        buttons.add(delete);
+
+        for (int i = 0; i <buttons.size()-2 ; i++){
+            int finalI = i;
+            buttons.get(i).addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String cmd =e.getActionCommand();
+                    if ('0'<=cmd.charAt(0)&&cmd.charAt(0)<='9'){
+                        dispFieldText.setText(dispFieldText.getText()+cmd);
+                    }
+                    JButton clickedButton = (JButton) e.getSource();
+                    double displayValue = 0;
+                    String dispVal =  dispFieldText.getText();
+                    if (!"".equals(dispFieldText)){
+                        displayValue= Double.parseDouble(dispVal);
+                }
+                    /*String clickedButtonLabel = clickedButton.getText();
+                    String line =e.getActionCommand();
+                    dispFieldText.setText(dispVal +line);*/
+
+            }
+        });}
+
+        delete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!dispFieldText.getText().equals("")){
+                String temp = dispFieldText.getText();
+                dispFieldText.setText(temp.substring(0, temp.length()-1));
+
+                }
+            }
+        });
         for (int i = 0; i < buttons.size(); i++) {
             buttonsPanel.add(buttons.get(i));
         }
@@ -79,5 +130,27 @@ public class AtmMenu extends JFrame {
         windowForWithdraw.setSize(400, 400);
         pack();
         windowForWithdraw.setVisible(true);
+    }
+
+    public void insertCardWindow(){
+        JFrame insertCard = new JFrame();
+        insertCard.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        insertCard.setTitle("Insert Card");
+        insertCard.setFocusable(true);
+        insertCard.setLocationRelativeTo(null);
+        JPanel card = new JPanel();
+        insertCard.add("Center",card);
+        JButton button = new JButton("Insert Card");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Controller.getInstance().insertCard();
+                showMenu();
+                insertCard.setVisible(false);
+            }
+        });
+        card.add("Center",button);
+        insertCard.setVisible(true);
+        insertCard.pack();
     }
 }

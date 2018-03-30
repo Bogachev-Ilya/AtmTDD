@@ -10,10 +10,8 @@ public class Main {
         bank.init();
         //atm.start(bank.getUser());
         AtmMenu atmMenu = new AtmMenu();
-        //времмено для теста меню
-        atm.insertCard(bank.getCreditCard());
         Controller.getInstance().setBank(bank);
         Controller.getInstance().setAtm(atm);
-        atmMenu.showMenu();
+        atmMenu.insertCardWindow();
     }
 }
