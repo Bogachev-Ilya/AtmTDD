@@ -9,25 +9,26 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class AtmMenu extends JFrame {
-       private JButton deposit = new JButton("Deposit money");
-        private JButton withdraw = new JButton("Withdraw");
-
-    public void showMenu (){
+    private JButton deposit = new JButton("Deposit money");
+    private JButton withdraw = new JButton("Withdraw");
+    /**слвжит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег*/
+    public enum Menu{WITHDRAW, DEPOSIT}
+    public void showMenu() {
         setTitle("Main menu");
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel atmMenu = new JPanel();
         add(atmMenu);
-        GridLayout gridLayout = new GridLayout(2,2);
+        GridLayout gridLayout = new GridLayout(2, 2);
         atmMenu.setLayout(gridLayout);
         JButton checkBalance = new JButton("Check balance");
         JButton cancel = new JButton("Cancel");
         checkBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                double balance =  Controller.getInstance().getBalance();
+                double balance = Controller.getInstance().getBalance();
                 JOptionPane jOptionPane = new JOptionPane();
-                jOptionPane.showConfirmDialog(null, "Balance on card:\n "+balance, "Balance", jOptionPane.PLAIN_MESSAGE);
+                jOptionPane.showConfirmDialog(null, "Balance on card:\n " + balance, "Balance", jOptionPane.PLAIN_MESSAGE);
             }
         });
         cancel.addActionListener(new ActionListener() {
@@ -42,6 +43,7 @@ public class AtmMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 windowEnterAmount();
+                Controller.getInstance().setMenu(Menu.WITHDRAW);
             }
         });
 
@@ -49,6 +51,7 @@ public class AtmMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 windowEnterAmount();
+                Controller.getInstance().setMenu(Menu.DEPOSIT);
             }
         });
         atmMenu.add(checkBalance);
@@ -68,14 +71,14 @@ public class AtmMenu extends JFrame {
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
         /**выравниваем поле ввода по провую сторону*/
-        JFormattedTextField dispFormattedTextField =new JFormattedTextField();
+        JFormattedTextField dispFormattedTextField = new JFormattedTextField();
         dispFormattedTextField.setHorizontalAlignment(SwingConstants.RIGHT);
         dispFormattedTextField.setEnabled(false);
         panel.add("North", dispFormattedTextField);
         JPanel buttonsPanel = new JPanel();
         GridLayout gridLayout = new GridLayout(4, 3);
         buttonsPanel.setLayout(gridLayout);
-        ArrayList <JButton> buttons = new ArrayList<>();
+        ArrayList<JButton> buttons = new ArrayList<>();
         for (int i = 1; i < 10; i++) {
             buttons.add(new JButton(String.valueOf(i)));
         }
@@ -93,43 +96,51 @@ public class AtmMenu extends JFrame {
         buttons.add(delete);
 
         windowForWithdraw.add("South", enter);
-        for (int i = 0; i <buttons.size()-2 ; i++){
+        for (int i = 0; i < buttons.size() - 2; i++) {
             int finalI = i;
             buttons.get(i).addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String cmd =e.getActionCommand();
-                    if ('0'<=cmd.charAt(0)&&cmd.charAt(0)<='9'){
-                        dispFormattedTextField.setText(dispFormattedTextField.getText()+cmd);
+                    String cmd = e.getActionCommand();
+                    if ('0' <= cmd.charAt(0) && cmd.charAt(0) <= '9') {
+                        dispFormattedTextField.setText(dispFormattedTextField.getText() + cmd);
                     }
                     double displayValue = 0;
-                    String dispVal =  dispFormattedTextField.getText();
-                    if (!"".equals(dispFormattedTextField)){
-                        displayValue= Double.parseDouble(dispVal);
-                }
+                    String dispVal = dispFormattedTextField.getText();
+                    if (!"".equals(dispFormattedTextField)) {
+                        displayValue = Double.parseDouble(dispVal);
+                    }
                     /**ввести значение и передать его в модель*/
                     enter.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
                             if (!"".equals(dispFormattedTextField)) {
-                                Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
-                                windowForWithdraw.setVisible(false);
+                                /**если выбрано меню внести наличные, то передать значение на счет*/
+                                if(Controller.getInstance().getMenu()==Menu.DEPOSIT){
+                                    Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
+                                    windowForWithdraw.setVisible(false);
+                                }else {
+                                    if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispFormattedTextField.getText()))){
+                                        return;
+                                    }else {
+                                        JOptionPane jOptionPane = new JOptionPane();
+                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance()+ "", "Balance", jOptionPane.PLAIN_MESSAGE);
+                                        dispFormattedTextField.setText("0");
+                                    }
+                                }
                             }
                         }
                     });
-                    /*если окно вызвано из меню снять деньги, значение передается в метод withdraw*/
-
-
-
-            }
-        });}
+                }
+            });
+        }
 
         delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!dispFormattedTextField.getText().equals("")){
-                String temp = dispFormattedTextField.getText();
-                    dispFormattedTextField.setText(temp.substring(0, temp.length()-1));
+                if (!dispFormattedTextField.getText().equals("")) {
+                    String temp = dispFormattedTextField.getText();
+                    dispFormattedTextField.setText(temp.substring(0, temp.length() - 1));
                 }
             }
         });
@@ -143,14 +154,14 @@ public class AtmMenu extends JFrame {
         windowForWithdraw.setVisible(true);
     }
 
-    public void insertCardWindow(){
+    public void insertCardWindow() {
         JFrame insertCard = new JFrame();
         insertCard.setDefaultCloseOperation(EXIT_ON_CLOSE);
         insertCard.setTitle("Insert Card");
         insertCard.setFocusable(true);
         insertCard.setLocationRelativeTo(null);
         JPanel card = new JPanel();
-        insertCard.add("Center",card);
+        insertCard.add("Center", card);
         JButton button = new JButton("Insert Card");
         button.addActionListener(new ActionListener() {
             @Override
@@ -160,7 +171,7 @@ public class AtmMenu extends JFrame {
                 insertCard.setVisible(false);
             }
         });
-        card.add("Center",button);
+        card.add("Center", button);
         insertCard.setVisible(true);
         insertCard.pack();
     }

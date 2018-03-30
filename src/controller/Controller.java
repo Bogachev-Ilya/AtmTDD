@@ -2,9 +2,16 @@ package controller;
 
 import model.Atm;
 import model.Bank;
+import view.AtmMenu;
 
 public  class Controller {
     private Atm atm;
+
+    public AtmMenu.Menu getMenu() {
+        return menu;
+    }
+
+    private AtmMenu.Menu menu;
 
     public Atm getAtm() {
         return atm;
@@ -47,4 +54,9 @@ public  class Controller {
     public void setAmount(double amount) {
         bank.getCreditCard().setAmount(amount);
     }
+
+    public void setMenu(AtmMenu.Menu menu) {
+        this.menu = menu;
+    }
+
 }

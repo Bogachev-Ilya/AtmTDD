@@ -118,7 +118,7 @@ public class Atm {
         this.creditCard = null;
     }
 
-    public boolean depositMoney(int money) {
+    public boolean depositMoney(double money) {
         if (money>=0){
            this.creditCard.setAmount(money);
             return true;
@@ -127,14 +127,13 @@ public class Atm {
         }
     }
 
-    public boolean withdraw(int money) {
+    public boolean withdraw(double money) {
         if (this.creditCard.getAmount() >= money) {
             this.creditCard.setAmount(this.creditCard.getAmount() - money);
             return true;
-        } else {
-            System.out.println("На карте недостаточно средств для снятия, пожалуйста уменьшите сумму и повторите запрос");
-            return false;
         }
+            return false;
+
     }
 
     public Menu atmMenu() {
