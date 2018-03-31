@@ -16,7 +16,7 @@ public class AtmMenu extends JFrame {
      * служит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
      */
     public enum Menu {
-        WITHDRAW, DEPOSIT, CANCEL
+        WITHDRAW, DEPOSIT, CANCEL, PASSWORD
     }
 
     public void showMenu() {
@@ -49,7 +49,7 @@ public class AtmMenu extends JFrame {
         withdraw.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowEnterAmount();
+                windowEnterAmount("Withdraw");
                 Controller.getInstance().setMenu(Menu.WITHDRAW);
             }
         });
@@ -57,7 +57,7 @@ public class AtmMenu extends JFrame {
         deposit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowEnterAmount();
+                windowEnterAmount("Deposit");
                 Controller.getInstance().setMenu(Menu.DEPOSIT);
             }
         });
@@ -69,15 +69,15 @@ public class AtmMenu extends JFrame {
         mainMenuFrame.setVisible(true);
     }
 
-    private void windowEnterAmount() {
-        JFrame windowForWithdraw = new JFrame();
-        windowForWithdraw.setFocusable(true);
-        windowForWithdraw.setTitle("Enter Amount");
-        windowForWithdraw.setLocationRelativeTo(null);
+    private void windowEnterAmount(String menuName) {
+        JFrame windowForEnter = new JFrame();
+        windowForEnter.setFocusable(true);
+        windowForEnter.setTitle(menuName);
+        windowForEnter.setLocationRelativeTo(null);
         JPanel panel = new JPanel();
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
-        /**выравниваем поле ввода по провую сторону*/
+        /**выравниваем поле ввода по правую сторону*/
         JFormattedTextField dispFormattedTextField = new JFormattedTextField();
         dispFormattedTextField.setHorizontalAlignment(SwingConstants.RIGHT);
         dispFormattedTextField.setEnabled(false);
@@ -96,13 +96,17 @@ public class AtmMenu extends JFrame {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                windowForWithdraw.setVisible(false);
+                windowForEnter.setVisible(false);
             }
         });
         buttons.add(cancel);
         buttons.add(delete);
 
-        windowForWithdraw.add("South", enter);
+        windowForEnter.add("South", enter);
+        /**для меню ввода паролья нет нужды в кнопке enter*/
+        if (Controller.getInstance().getMenu().equals(Menu.PASSWORD)) {
+            windowForEnter.remove(enter);
+        }
         for (int i = 0; i < buttons.size() - 2; i++) {
             int finalI = i;
             buttons.get(i).addActionListener(new ActionListener() {
@@ -117,6 +121,30 @@ public class AtmMenu extends JFrame {
                     if (!"".equals(dispFormattedTextField)) {
                         displayValue = Double.parseDouble(dispVal);
                     }
+                    /**если выбрано поле ввода пароля, необходимо дождаться ввода 4 цифр и передать на проверку в модель*/
+                    if (Controller.getInstance().getMenu().equals(Menu.PASSWORD)) {
+                        int passwordNumb = 0;
+                        if (!"".equals(dispFormattedTextField)) {
+                            passwordNumb = Integer.parseInt(dispVal);
+                            if (dispVal.length() == 4) {
+                                /**если пароль введен верно передать управление основному меню*/
+                                if (Controller.getInstance().checkPassword(passwordNumb)) {
+                                    showMenu();
+                                    windowForEnter.setVisible(false);
+                                    return;
+                                }
+                                /**если не верен пароль, вывести предупреждение, вернуть карту*/
+
+                                JOptionPane incorrectPassword = new JOptionPane();
+                                incorrectPassword.showConfirmDialog(windowForEnter, "Incorrect password!\n Take your card!", "Incorrect Password", incorrectPassword.PLAIN_MESSAGE);
+                                windowForEnter.setVisible(false);
+                                Controller.getInstance().getAtm().removeCard();
+                                insertCardWindow();
+
+                            }
+                        }
+                    }
+
                     /**ввести значение и передать его в модель*/
                     enter.addActionListener(new ActionListener() {
                         @Override
@@ -125,21 +153,21 @@ public class AtmMenu extends JFrame {
                             switch (Controller.getInstance().getMenu()) {
                                 case DEPOSIT:
                                     Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
-                                    windowForWithdraw.setVisible(false);
+                                    windowForEnter.setVisible(false);
                                     Controller.getInstance().setMenu(Menu.CANCEL);
                                     break;
                                 case WITHDRAW:
                                     if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispVal))) {
-                                        windowForWithdraw.setVisible(false);
+                                        windowForEnter.setVisible(false);
                                         dispFormattedTextField.setText("0");
                                         JOptionPane jOptionPane = new JOptionPane();
-                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Take your money:\n " + dispVal, "Take your money", jOptionPane.PLAIN_MESSAGE);
-
+                                        jOptionPane.showConfirmDialog(windowForEnter, "Take money:\n " + dispVal, "Take money", jOptionPane.PLAIN_MESSAGE);
+                                        /**необходим для выхода из цикла проверок*/
                                         Controller.getInstance().setMenu(Menu.CANCEL);
                                         break;
                                     } else {
                                         JOptionPane jOptionPane = new JOptionPane();
-                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
+                                        jOptionPane.showConfirmDialog(windowForEnter, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
                                         dispFormattedTextField.setText("0");
                                         Controller.getInstance().setMenu(Menu.CANCEL);
                                         break;
@@ -167,10 +195,10 @@ public class AtmMenu extends JFrame {
             buttonsPanel.add(buttons.get(i));
         }
         panel.add("Center", buttonsPanel);
-        windowForWithdraw.add(panel);
-        windowForWithdraw.setSize(400, 400);
+        windowForEnter.add(panel);
+        windowForEnter.setSize(400, 400);
         pack();
-        windowForWithdraw.setVisible(true);
+        windowForEnter.setVisible(true);
     }
 
     public void insertCardWindow() {
@@ -187,17 +215,23 @@ public class AtmMenu extends JFrame {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
-        insertCard.setPreferredSize(new Dimension(imageIcon.getIconWidth(), imageIcon.getIconHeight()+40));
+        insertCard.setPreferredSize(new Dimension(imageIcon.getIconWidth(), imageIcon.getIconHeight() + 40));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Controller.getInstance().insertCard();
-                showMenu();
+                //showMenu();
+                passwordEnter();
                 insertCard.setVisible(false);
             }
         });
         card.add("Center", button);
         insertCard.pack();
         insertCard.setVisible(true);
+    }
+
+    public void passwordEnter() {
+        Controller.getInstance().setMenu(Menu.PASSWORD);
+        windowEnterAmount("Password");
     }
 }

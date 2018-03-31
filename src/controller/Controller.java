@@ -59,4 +59,9 @@ public  class Controller {
         this.menu = menu;
     }
 
+    public boolean checkPassword(int passwordNumb) {
+        if (Controller.getInstance().getAtm().getCreditCard().getPassword()==passwordNumb){
+            return true;
+        }else return false;
+    }
 }
