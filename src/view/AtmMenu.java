@@ -13,18 +13,19 @@ public class AtmMenu extends JFrame {
     private JButton withdraw = new JButton("Withdraw");
 
     /**
-     * слвжит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
+     * служит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
      */
     public enum Menu {
-        WITHDRAW, DEPOSIT
+        WITHDRAW, DEPOSIT, CANCEL
     }
 
     public void showMenu() {
-        setTitle("Main menu");
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        JFrame mainMenuFrame = new JFrame();
+        mainMenuFrame.setTitle("Main menu");
+        mainMenuFrame.setLocationRelativeTo(null);
+        mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel atmMenu = new JPanel();
-        add(atmMenu);
+        mainMenuFrame.add(atmMenu);
         GridLayout gridLayout = new GridLayout(2, 2);
         atmMenu.setLayout(gridLayout);
         JButton checkBalance = new JButton("Check balance");
@@ -64,8 +65,8 @@ public class AtmMenu extends JFrame {
         atmMenu.add(deposit);
         atmMenu.add(withdraw);
         atmMenu.add(cancel);
-        pack();
-        setVisible(true);
+        mainMenuFrame.pack();
+        mainMenuFrame.setVisible(true);
     }
 
     private void windowEnterAmount() {
@@ -125,18 +126,27 @@ public class AtmMenu extends JFrame {
                                 case DEPOSIT:
                                     Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
                                     windowForWithdraw.setVisible(false);
+                                    Controller.getInstance().setMenu(Menu.CANCEL);
                                     break;
                                 case WITHDRAW:
                                     if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispVal))) {
                                         windowForWithdraw.setVisible(false);
                                         dispFormattedTextField.setText("0");
+                                        JOptionPane jOptionPane = new JOptionPane();
+                                        jOptionPane.showConfirmDialog(windowForWithdraw, "Take your money:\n " + dispVal, "Take your money", jOptionPane.PLAIN_MESSAGE);
+
+                                        Controller.getInstance().setMenu(Menu.CANCEL);
                                         break;
                                     } else {
                                         JOptionPane jOptionPane = new JOptionPane();
                                         jOptionPane.showConfirmDialog(windowForWithdraw, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
                                         dispFormattedTextField.setText("0");
+                                        Controller.getInstance().setMenu(Menu.CANCEL);
                                         break;
                                     }
+                                case CANCEL:
+                                    return;
+
                             }
                         }
                     });
@@ -177,7 +187,7 @@ public class AtmMenu extends JFrame {
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
-        insertCard.setPreferredSize(new Dimension(imageIcon.getIconWidth(), imageIcon.getIconHeight()));
+        insertCard.setPreferredSize(new Dimension(imageIcon.getIconWidth(), imageIcon.getIconHeight()+40));
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
