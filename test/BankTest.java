@@ -26,10 +26,10 @@ public class BankTest {
         long accoutNumber = 3456_7549_3452L;
         CreditCard creditCard = bank.emittedCard();
         creditCard.setAccountNumber(accoutNumber);
-        creditCard.setAmount(0);
+        creditCard.setTestamount(0);
         creditCard.setPassword(password);
         assertEquals(password, creditCard.getPassword());
         assertEquals(accoutNumber, creditCard.getAccountNumber());
-        assertEquals(0, creditCard.getAmount());
+        assertEquals(0, creditCard.getTestamount());
     }
 }

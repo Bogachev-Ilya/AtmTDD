@@ -4,6 +4,16 @@ public class CreditCard {
     private double amount;
     private int password;
 
+    public int getTestamount() {
+        return testamount;
+    }
+
+    public void setTestamount(int testamount) {
+        this.testamount = testamount;
+    }
+
+    private int testamount;
+
     public void setAccountNumber(long accountNumber) {
         this.accountNumber = accountNumber;
     }
@@ -17,6 +27,11 @@ public class CreditCard {
     public CreditCard(double amount, int password) {
         this.password =password;
         this.amount = amount;
+    }
+
+    public CreditCard(int testamount, int password){
+        this.testamount =testamount;
+        this.password = password;
     }
 
     public CreditCard(long accoutNumber, int password) {

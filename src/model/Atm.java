@@ -43,15 +43,15 @@ public class Atm {
         while (flag) {
             switch (atmMenu()) {
                 case CHECKBALANCE:
-                    System.out.println("Баланс на карте: " + this.getCreditCard().getAmount());
+                    System.out.println("Баланс на карте: " + this.getCreditCard().getTestamount());
                     continue;
                 case DEPOSIT:
                     System.out.println("Введите сумму внесения");
-                    this.depositMoney(Integer.valueOf(scanner.nextLine()));
+                    this.depositMoneyTest(Integer.valueOf(scanner.nextLine()));
                     continue;
                 case WITHDRAW:
                     System.out.println("Введите сумму снятия");
-                    if (this.withdraw(Integer.valueOf(scanner.nextLine()))) {
+                    if (this.withdrawTest(Integer.valueOf(scanner.nextLine()))) {
                         continue;
                     }
                 case CANCEL:
@@ -127,9 +127,26 @@ public class Atm {
         }
     }
 
+    public boolean depositMoneyTest(int money) {
+        if (money>=0){
+            this.creditCard.setTestamount(money);
+            return true;
+        }else {
+            return false;
+        }
+    }
+
     public boolean withdraw(double money) {
         if (this.creditCard.getAmount() >= money) {
             this.creditCard.setAmount(this.creditCard.getAmount() - money);
+            return true;
+        }else
+            return false;
+
+    }
+    public boolean withdrawTest(int money) {
+        if (this.creditCard.getTestamount() >= money) {
+            this.creditCard.setTestamount(this.creditCard.getTestamount() - money);
             return true;
         }else
             return false;

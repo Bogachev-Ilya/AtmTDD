@@ -43,7 +43,7 @@ public class AtmMenu extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 Controller.getInstance().getAtm().removeCard();
                 setVisible(false);
-                insertCardWindow();
+                System.exit(1);
             }
         });
         withdraw.addActionListener(new ActionListener() {
@@ -116,11 +116,9 @@ public class AtmMenu extends JFrame {
                     if ('0' <= cmd.charAt(0) && cmd.charAt(0) <= '9') {
                         dispFormattedTextField.setText(dispFormattedTextField.getText() + cmd);
                     }
-                    double displayValue = 0;
+
                     String dispVal = dispFormattedTextField.getText();
-                    if (!"".equals(dispFormattedTextField)) {
-                        displayValue = Double.parseDouble(dispVal);
-                    }
+
                     /**если выбрано поле ввода пароля, необходимо дождаться ввода 4 цифр и передать на проверку в модель*/
                     if (Controller.getInstance().getMenu().equals(Menu.PASSWORD)) {
                         int passwordNumb = 0;
@@ -131,6 +129,7 @@ public class AtmMenu extends JFrame {
                                 if (Controller.getInstance().checkPassword(passwordNumb)) {
                                     showMenu();
                                     windowForEnter.setVisible(false);
+                                    Controller.getInstance().setMenu(Menu.CANCEL);
                                     return;
                                 }
                                 /**если не верен пароль, вывести предупреждение, вернуть карту*/
@@ -139,6 +138,7 @@ public class AtmMenu extends JFrame {
                                 incorrectPassword.showConfirmDialog(windowForEnter, "Incorrect password!\n Take your card!", "Incorrect Password", incorrectPassword.PLAIN_MESSAGE);
                                 windowForEnter.setVisible(false);
                                 Controller.getInstance().getAtm().removeCard();
+                                Controller.getInstance().setMenu(Menu.CANCEL);
                                 insertCardWindow();
 
                             }
@@ -173,6 +173,7 @@ public class AtmMenu extends JFrame {
                                         break;
                                     }
                                 case CANCEL:
+
                                     return;
 
                             }
@@ -220,7 +221,6 @@ public class AtmMenu extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Controller.getInstance().insertCard();
-                //showMenu();
                 passwordEnter();
                 insertCard.setVisible(false);
             }

@@ -38,9 +38,9 @@ public class AtmTest {
         CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
-        assertTrue(atm.depositMoney(35));
-        assertEquals(35, atm.getCreditCard().getAmount());
-        assertFalse(atm.depositMoney(-45));
+        assertTrue(atm.depositMoneyTest(35));
+        assertEquals(35, atm.getCreditCard().getTestamount());
+        assertFalse(atm.depositMoneyTest(-45));
     }
 
     @Test
@@ -48,9 +48,9 @@ public class AtmTest {
         CreditCard creditCard = new CreditCard(0, 1234);
         Atm atm = new Atm();
         atm.insertCard(creditCard);
-        atm.depositMoney(100);
-        atm.withdraw(40);
-        assertEquals(60, atm.getCreditCard().getAmount());
+        atm.depositMoneyTest(100);
+        atm.withdrawTest(40);
+        assertEquals(60, atm.getCreditCard().getTestamount());
         assertFalse( atm.withdraw(80));
     }
 
@@ -137,7 +137,7 @@ public class AtmTest {
        int password =1234;
        CreditCard creditCard =  bank.emittedCard();
        creditCard.setPassword(password);
-       creditCard.setAmount(0);
+       creditCard.setTestamount(0);
        creditCard.setAccountNumber(accountNumber);
        Atm atm = new Atm(mockinputStream);
        atm.insertCard(creditCard);
@@ -145,7 +145,7 @@ public class AtmTest {
        atm.startWork();
        assertEquals(null, atm.getCreditCard());
        atm.insertCard(creditCard);
-       assertEquals(200, atm.getCreditCard().getAmount());
+       assertEquals(200, atm.getCreditCard().getTestamount());
 
    }
 }
