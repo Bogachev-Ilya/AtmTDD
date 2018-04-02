@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class AtmMenu extends JFrame {
     private JButton deposit = new JButton("Deposit money");
@@ -233,5 +234,37 @@ public class AtmMenu extends JFrame {
     public void passwordEnter() {
         Controller.getInstance().setMenu(Menu.PASSWORD);
         windowEnterAmount("Password");
+    }
+
+    /**меню выбора пользователя*/
+    public void selectUserName(){
+        JFrame usersFrame = new JFrame();
+        usersFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        usersFrame.setTitle("Select Name");
+        usersFrame.setLocationRelativeTo(null);
+        Font font = new Font("Arial", Font.PLAIN, 20);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        final JLabel label = new JLabel(" ");
+        label.setAlignmentX(LEFT_ALIGNMENT);
+        label.setFont(font);
+        usersFrame.add(label);
+        JComboBox comboBox = new JComboBox( Controller.getInstance().getDataBase().getUsers());
+        comboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        comboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox box = (JComboBox) e.getSource();
+                String item = (String) box.getSelectedItem();
+                label.setText(item);
+
+            }
+        });
+        comboBox.setFont(font);
+        panel.add(comboBox);
+        usersFrame.add(panel);
+        usersFrame.setPreferredSize(new Dimension(300, 150));
+        usersFrame.pack();
+        usersFrame.setVisible(true);
     }
 }

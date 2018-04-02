@@ -1,8 +1,23 @@
 package model;
 
+import controller.Controller;
+
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public class DataBase {
+    public Vector<String> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Vector<String> users) {
+        this.users = users;
+    }
+
+    private Vector<String> users;
+
 
     public void initDataBase(String URL){
 
@@ -53,6 +68,20 @@ public class DataBase {
                     long amount =resultSet.getLong("Amount");
                     System.out.printf("Card Type: %s, card number: %d, password: %d, amount: %d\n", cardType, cardNumber, password, amount);
 
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public void selUsers(String URL){
+            try(Connection connection = DriverManager.getConnection(URL)){
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT User From Users;");
+                users = new Vector<>();
+                while (resultSet.next()){
+                    users.add(resultSet.getString("User"));
+                   // System.out.printf("User name %s\n", resultSet.getString("User"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

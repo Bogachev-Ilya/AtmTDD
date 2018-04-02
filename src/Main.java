@@ -16,11 +16,14 @@ public class Main {
         bank.init();
         DataBase dataBase = new DataBase();
         dataBase.initDataBase("jdbc:sqlite:banks.db");
-        dataBase.selUserCard("jdbc:sqlite:banks.db","Jonson");
+        //dataBase.selUserCard("jdbc:sqlite:banks.db","Jonson");
+        dataBase.selUsers("jdbc:sqlite:banks.db");
         AtmMenu atmMenu = new AtmMenu();
         Controller.getInstance().setBank(bank);
         Controller.getInstance().setAtm(atm);
-        atmMenu.insertCardWindow();
+        Controller.getInstance().setDataBase(dataBase);
+        atmMenu.selectUserName();
+       // atmMenu.insertCardWindow();
 
     }
 }

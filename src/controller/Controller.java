@@ -2,10 +2,16 @@ package controller;
 
 import model.Atm;
 import model.Bank;
+import model.DataBase;
 import view.AtmMenu;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 
 public  class Controller {
     private Atm atm;
+    private Bank bank;
 
     public AtmMenu.Menu getMenu() {
         return menu;
@@ -29,7 +35,15 @@ public  class Controller {
         this.bank = bank;
     }
 
-    private Bank bank;
+    public DataBase getDataBase() {
+        return dataBase;
+    }
+
+    public void setDataBase(DataBase dataBase) {
+        this.dataBase = dataBase;
+    }
+
+    private DataBase dataBase;
     private static final Controller INSTANCE = new Controller();
 
     private Controller(){}
@@ -63,5 +77,11 @@ public  class Controller {
         if (Controller.getInstance().getAtm().getCreditCard().getPassword()==passwordNumb){
             return true;
         }else return false;
+    }
+
+    public Vector<String> getUsers() {
+        if (!Controller.getInstance().getDataBase().getUsers().isEmpty()) {
+            return new Vector<>  (Controller.getInstance().getDataBase().getUsers());
+        }return null;
     }
 }
