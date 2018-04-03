@@ -9,15 +9,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public  class Controller {
+public class Controller {
     private Atm atm;
     private Bank bank;
+    private AtmMenu.Menu menu;
+    private DataBase dataBase;
+    private String userName;
+    private Long cardNumber;
+    private String URL;
+
+    private Controller(){}
+
+    private static final Controller INSTANCE = new Controller();
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setCardNumber(Long cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public Long getCardNumber() {
+        return cardNumber;
+    }
 
     public AtmMenu.Menu getMenu() {
         return menu;
     }
-
-    private AtmMenu.Menu menu;
 
     public Atm getAtm() {
         return atm;
@@ -42,11 +65,6 @@ public  class Controller {
     public void setDataBase(DataBase dataBase) {
         this.dataBase = dataBase;
     }
-
-    private DataBase dataBase;
-    private static final Controller INSTANCE = new Controller();
-
-    private Controller(){}
 
     public static Controller getInstance(){
         return INSTANCE;
@@ -83,5 +101,13 @@ public  class Controller {
         if (!Controller.getInstance().getDataBase().getUsers().isEmpty()) {
             return new Vector<>  (Controller.getInstance().getDataBase().getUsers());
         }return null;
+    }
+
+    public void setURL(String URL) {
+        this.URL = URL;
+    }
+
+    public String getURL() {
+        return URL;
     }
 }

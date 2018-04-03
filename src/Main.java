@@ -5,6 +5,7 @@ import model.DataBase;
 import view.AtmMenu;
 
 public class Main {
+
     public static void main(String[] args) {
         try {
             Class.forName("org.sqlite.JDBC");
@@ -15,15 +16,17 @@ public class Main {
         Atm atm = new Atm(Bank.List.VTB);
         bank.init();
         DataBase dataBase = new DataBase();
-        dataBase.initDataBase("jdbc:sqlite:banks.db");
-        //dataBase.selUserCard("jdbc:sqlite:banks.db","Jonson");
-        dataBase.selUsers("jdbc:sqlite:banks.db");
+        String URL = "jdbc:sqlite:banks.db";
+        dataBase.initDataBase(URL);
         AtmMenu atmMenu = new AtmMenu();
+        Controller.getInstance().setURL(URL);
         Controller.getInstance().setBank(bank);
         Controller.getInstance().setAtm(atm);
         Controller.getInstance().setDataBase(dataBase);
-        atmMenu.selectUserName();
-       // atmMenu.insertCardWindow();
+         atmMenu.selectUserName();
+        //dataBase.selUsers("jdbc:sqlite:banks.db");
+        //dataBase.selUserCard("jdbc:sqlite:banks.db",Controller.getInstance().getUserName());
+        // atmMenu.insertCardWindow();
 
     }
 }

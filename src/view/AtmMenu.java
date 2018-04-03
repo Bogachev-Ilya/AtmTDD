@@ -78,8 +78,10 @@ public class AtmMenu extends JFrame {
         JPanel panel = new JPanel();
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
+        Font font = new Font("Arial", Font.PLAIN, 20);
         /**выравниваем поле ввода по правую сторону*/
         JFormattedTextField dispFormattedTextField = new JFormattedTextField();
+        dispFormattedTextField.setFont(font);
         dispFormattedTextField.setHorizontalAlignment(SwingConstants.RIGHT);
         dispFormattedTextField.setEnabled(false);
         panel.add("North", dispFormattedTextField);
@@ -249,19 +251,38 @@ public class AtmMenu extends JFrame {
         label.setAlignmentX(LEFT_ALIGNMENT);
         label.setFont(font);
         usersFrame.add(label);
-        JComboBox comboBox = new JComboBox( Controller.getInstance().getDataBase().getUsers());
-        comboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        comboBox.addActionListener(new ActionListener() {
+        /**сделать запрос в базе данных*/
+        Controller.getInstance().getDataBase().selUsers(Controller.getInstance().getURL());
+        JComboBox userNameBox = new JComboBox(Controller.getInstance().getDataBase().getUsers());
+        userNameBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        userNameBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox box = (JComboBox) e.getSource();
-                String item = (String) box.getSelectedItem();
-                label.setText(item);
+                String name = (String) box.getSelectedItem();
+                label.setText(name);
+                Controller.getInstance().setUserName(name);
 
             }
         });
-        comboBox.setFont(font);
-        panel.add(comboBox);
+        /**список карт по данному пользователю*/
+        Controller.getInstance().getDataBase().selUserCard(Controller.getInstance().getURL(), Controller.getInstance().getUserName());
+        JComboBox userCardBox = new JComboBox(Controller.getInstance().getDataBase().getUserCardNumbs());
+        userCardBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        userCardBox.addActionListener(new ActionListener() {
+            /**выбрать карту, передать ее в модель и запустить окно вставить карту*/
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox box = (JComboBox) e.getSource();
+                Long cardNumber = (Long) box.getSelectedItem();
+                Controller.getInstance().setCardNumber(cardNumber);
+                usersFrame.setVisible(false);
+                insertCardWindow();
+            }
+        });
+        userNameBox.setFont(font);
+        panel.add(userNameBox);
+        panel.add(userCardBox);
         usersFrame.add(panel);
         usersFrame.setPreferredSize(new Dimension(300, 150));
         usersFrame.pack();
