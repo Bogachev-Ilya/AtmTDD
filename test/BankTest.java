@@ -23,7 +23,7 @@ public class BankTest {
         user.setName("Petrov");
         bank.setUser(user);
         int password = 1234;
-        long accoutNumber = 3456_7549_3452L;
+        String accoutNumber = "345675493452";
         CreditCard creditCard = bank.emittedCard();
         creditCard.setAccountNumber(accoutNumber);
         creditCard.setTestamount(0);

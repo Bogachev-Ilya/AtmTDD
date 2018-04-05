@@ -13,10 +13,10 @@ public class UserTest {
         user.setName("Petrov");
         String name ="Petrov";
         CreditCard creditCard = new CreditCard();
-        user.setBanks(Bank.List.VTB);
+        user.setBank("VTB");
         user.setCreditCard(creditCard);
         assertEquals(name, user.getName());
-        assertEquals(Bank.List.VTB, user.getBanks());
+        assertEquals("VTB", user.getBank());
         assertEquals(creditCard, user.getCreditCard());
     }
 }

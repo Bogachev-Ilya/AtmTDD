@@ -1,7 +1,7 @@
 package model;
 
 public class CreditCard {
-    private double amount;
+    private float amount;
     private int password;
 
     public int getTestamount() {
@@ -14,17 +14,17 @@ public class CreditCard {
 
     private int testamount;
 
-    public void setAccountNumber(long accountNumber) {
+    public void setAccountNumber(String accountNumber) {
         this.accountNumber = accountNumber;
     }
 
-    private long accountNumber;
+    private String accountNumber;
 
     public CreditCard(){
 
     }
 
-    public CreditCard(double amount, int password) {
+    public CreditCard(float amount, int password) {
         this.password =password;
         this.amount = amount;
     }
@@ -34,17 +34,17 @@ public class CreditCard {
         this.password = password;
     }
 
-    public CreditCard(long accoutNumber, int password) {
+    public CreditCard(String accoutNumber, int password) {
         this.accountNumber =accoutNumber;
         this.password=password;
         setAmount(0);
     }
 
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -56,7 +56,7 @@ public class CreditCard {
         this.password =password;
     }
 
-    public long getAccountNumber() {
+    public String getAccountNumber() {
         return accountNumber;
     }
 }

@@ -133,7 +133,7 @@ public class AtmTest {
        user.setName("TestName");
        Bank bank = new Bank(Bank.List.VTB);
        user.setBanks(Bank.List.VTB);
-       long accountNumber = 1234567890L;
+       String accountNumber = "1234567890";
        int password =1234;
        CreditCard creditCard =  bank.emittedCard();
        creditCard.setPassword(password);

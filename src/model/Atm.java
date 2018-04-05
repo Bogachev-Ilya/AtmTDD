@@ -118,7 +118,7 @@ public class Atm {
         this.creditCard = null;
     }
 
-    public boolean depositMoney(double money) {
+    public boolean depositMoney(float money) {
         if (money>=0){
            this.creditCard.setAmount(money);
             return true;
@@ -136,7 +136,7 @@ public class Atm {
         }
     }
 
-    public boolean withdraw(double money) {
+    public boolean withdraw(float money) {
         if (this.creditCard.getAmount() >= money) {
             this.creditCard.setAmount(this.creditCard.getAmount() - money);
             return true;

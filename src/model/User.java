@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class User {
     private String name;
-    private Bank.List bank;
+    private String bank;
     private CreditCard creditCard;
-
-    public Bank.List getBank() {
+    private Bank.List banks;
+    public String getBank() {
         return bank;
     }
 
-    public void setBank(Bank.List bank) {
+    public void setBank(String bank) {
         this.bank = bank;
     }
 
@@ -27,9 +27,7 @@ public class User {
         this.name = name;
     }
 
-    public void setBanks(Bank.List bank) {
-        this.bank = bank;
-    }
+
 
     public String getName() {
         return name;
@@ -48,7 +46,8 @@ public class User {
         return Objects.hash(name, bank);
     }
 
-    public Bank.List getBanks() {
-        return bank;
+
+    public void setBanks(Bank.List banks) {
+        this.banks = banks;
     }
 }

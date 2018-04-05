@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Vector;
 
 public class AtmMenu extends JFrame {
@@ -155,12 +156,12 @@ public class AtmMenu extends JFrame {
                             /**если выбрано меню внести наличные, то передать значение на счет*/
                             switch (Controller.getInstance().getMenu()) {
                                 case DEPOSIT:
-                                    Controller.getInstance().setAmount(Double.parseDouble(dispFormattedTextField.getText()));
+                                    Controller.getInstance().setAmount(Float.parseFloat(dispFormattedTextField.getText()));
                                     windowForEnter.setVisible(false);
                                     Controller.getInstance().setMenu(Menu.CANCEL);
                                     break;
                                 case WITHDRAW:
-                                    if (Controller.getInstance().getAtm().withdraw(Double.parseDouble(dispVal))) {
+                                    if (Controller.getInstance().getAtm().withdraw(Float.parseFloat(dispVal))) {
                                         windowForEnter.setVisible(false);
                                         dispFormattedTextField.setText("0");
                                         JOptionPane jOptionPane = new JOptionPane();
@@ -262,27 +263,21 @@ public class AtmMenu extends JFrame {
                 String name = (String) box.getSelectedItem();
                 label.setText(name);
                 Controller.getInstance().setUserName(name);
-
-            }
-        });
-        /**список карт по данному пользователю*/
-        Controller.getInstance().getDataBase().selUserCard(Controller.getInstance().getURL(), Controller.getInstance().getUserName());
-        JComboBox userCardBox = new JComboBox(Controller.getInstance().getDataBase().getUserCardNumbs());
-        userCardBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        userCardBox.addActionListener(new ActionListener() {
-            /**выбрать карту, передать ее в модель и запустить окно вставить карту*/
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox box = (JComboBox) e.getSource();
-                Long cardNumber = (Long) box.getSelectedItem();
-                Controller.getInstance().setCardNumber(cardNumber);
+                /**окно выбора карт*/
+                JOptionPane selCard = new JOptionPane();
+                Controller.getInstance().getDataBase().selUserCard(Controller.getInstance().getURL(), Controller.getInstance().getUserName());
+                selCard.setInitialSelectionValue(Controller.getInstance().getDataBase().getUserCardNumbs());
+                String selectedCardNumber = (String) JOptionPane.showInputDialog
+                        (usersFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null, Controller.getInstance().getDataBase().getUserCardNumbs(), Controller.getInstance().getDataBase().getUserCardNumbs()[0]);
+                System.err.println(Arrays.toString(Controller.getInstance().getDataBase().getUserCardNumbs()));
+                Controller.getInstance().setCardNumber(selectedCardNumber);
                 usersFrame.setVisible(false);
                 insertCardWindow();
+
             }
         });
         userNameBox.setFont(font);
         panel.add(userNameBox);
-        panel.add(userCardBox);
         usersFrame.add(panel);
         usersFrame.setPreferredSize(new Dimension(300, 150));
         usersFrame.pack();

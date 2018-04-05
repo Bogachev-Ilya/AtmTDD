@@ -1,9 +1,14 @@
 package model;
 
+import controller.Controller;
+
 public class Bank {
     private String name;
     private User user;
 
+    public Bank (String name){
+        this.name = name;
+    }
     public Bank(List name){
         this.setName(name);
     }
@@ -47,6 +52,7 @@ public class Bank {
     }
 
     private long accountNumber;
+
     private int password;
 
     public void setName(List name) {
@@ -70,14 +76,12 @@ public class Bank {
     }
     public void init() {
         user = new User();
-        user.setName("Petrov");
-        user.setBanks(Bank.List.VTB);
-        long accountNumber = 1234567890L;
-        int password = 1234;
+        user.setName(Controller.getInstance().getUserName());
+        user.setBank(Controller.getInstance().getDataBase().getBankName());
         creditCard = this.emittedCard();
-        creditCard.setPassword(password);
-        creditCard.setAmount(0);
-        creditCard.setAccountNumber(accountNumber);
+        creditCard.setPassword(Controller.getInstance().getDataBase().getPassword());
+        creditCard.setAmount(Controller.getInstance().getDataBase().getAmount());
+        creditCard.setAccountNumber(Controller.getInstance().getCardNumber());
         user.setCreditCard(creditCard);
         this.setUser(user);
     }
