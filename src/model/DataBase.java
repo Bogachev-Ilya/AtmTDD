@@ -3,6 +3,7 @@ package model;
 import controller.Controller;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -10,9 +11,9 @@ public class DataBase {
     private Vector<String> users;
     private String[] userCardNumbs;
     private Vector<Float> userCardAmounts = new Vector<>();
-    private List <Integer> passwords;
-    private List<String> cardTypes;
-    private List<String> bankNames;
+    private List <Integer> passwords=new ArrayList<>();
+    private List<String> cardTypes=new ArrayList<>();
+    private List<String> bankNames=new ArrayList<>();
     private String bankName;
     private Integer password;
     private String cardType;
@@ -153,8 +154,8 @@ public class DataBase {
                     int cardPosition = 0;
                 /**нати позицию карты в массиве, и по этой позиции выбрать остальные значения карт*/
                 for (int j = 0; j < userCardNumbs.length; j++) {
-                    if (userCardNumbs[i].equals(Controller.getInstance().getCardNumber())){
-                        cardPosition=i;
+                    if (userCardNumbs[j].equals(Controller.getInstance().getCardNumber())){
+                        cardPosition=j;
                     }
                 }
                 cardType = cardTypes.get(cardPosition);

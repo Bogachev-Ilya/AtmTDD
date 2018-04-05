@@ -76,7 +76,7 @@ public class Controller {
     }
 
     public boolean insertCard() {
-        if (atm.insertCardGui(bank.getCreditCard())) {
+        if (Controller.getInstance().getAtm().insertCardGui(Controller.getInstance().getBank().getCreditCard())) {
             return true;
         } else {
             return false;

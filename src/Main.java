@@ -25,7 +25,5 @@ public class Main {
         Bank bank = new Bank(Controller.getInstance().getDataBase().getBankName());
         bank.init();
         Controller.getInstance().setBank(bank);
-
-
     }
 }
