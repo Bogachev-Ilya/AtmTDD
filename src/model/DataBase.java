@@ -60,8 +60,8 @@ public class DataBase {
     }
 
     public void initDataBase(String URL) {
-        if (checkDBExist()) {
-        } else
+        if (!(checkDBExist())) {
+
             try (Connection connection = DriverManager.getConnection(URL)) {
                 Statement statement = connection.createStatement();
                 /**база данных содержащая имя, счет и банк, являтся primary*/
@@ -96,6 +96,7 @@ public class DataBase {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
     }
 
     private boolean checkDBExist() {
@@ -107,6 +108,8 @@ public class DataBase {
                 String databaseName = resultSet.getString(1);
                 if (databaseName.equals("banks.db")) {
                     return true;
+
+
                 }
             }
             resultSet.close();

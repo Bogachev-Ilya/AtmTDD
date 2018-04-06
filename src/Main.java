@@ -22,8 +22,8 @@ public class Main {
         Controller.getInstance().setAtm(atm);
         Controller.getInstance().setDataBase(dataBase);
         atmMenu.selectUserName();
-        Bank bank = new Bank(Controller.getInstance().getDataBase().getBankName());
-        bank.init();
+        Bank bank = new Bank();
         Controller.getInstance().setBank(bank);
+        bank.init();
     }
 }
