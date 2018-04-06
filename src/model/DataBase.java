@@ -60,12 +60,10 @@ public class DataBase {
     }
 
     public void initDataBase(String URL) {
-        if (!(checkDBExist("Users"))) {
-
+        if (!(checkDBExist())) {
             try (Connection connection = DriverManager.getConnection(URL)) {
                 Statement statement = connection.createStatement();
                 /**база данных содержащая имя, счет и банк, являтся primary*/
-                statement.executeUpdate("DROP TABLE IF EXISTS Users;");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Users" +
                         "(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, User TEXT, Bank TEXT, Account TEXT);");
                 statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
@@ -78,7 +76,6 @@ public class DataBase {
                         "VALUES ('Kirill', 'MOSCOWCREDIT', '656577773344');");
                 /**таблица с номерами карт пользователей*/
                 statement.execute("PRAGMA foreign_keys=on;");
-                statement.executeUpdate("DROP TABLE IF EXISTS Cards");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Cards" +
                         "(CId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, CardType TEXT, CardNumber TEXT, Password INTEGER, Amount FLOAT, Id Integer, FOREIGN KEY (Id) REFERENCES Users(Id) );");
                 statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
@@ -91,28 +88,26 @@ public class DataBase {
                         "VALUES ('MasterCard', '456788889994563', 2345, 67899, 1)");
                 statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
                         "VALUES ('VISA', '678988669995454', 3344, 67899, 4)");
-
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private boolean checkDBExist(String name) {
+    private boolean checkDBExist() {
         try {
             Class.forName("org.sqlite.JDBC"); //Register JDBC Driver
             Connection conn = DriverManager.getConnection(Controller.getInstance().getURL());
-            ResultSet resultSet = conn.getMetaData().getCatalogs();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet =  statement.executeQuery("SELECT * FROM sqlite_master WHERE type='table';");
             while (resultSet.next()) {
                 String databaseName = resultSet.getString(1);
-                if (databaseName.equals(name)) {
+                if (databaseName.equals("table")) {
                     return true;
-
-
                 }
             }
             resultSet.close();
+            conn.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -133,7 +128,6 @@ public class DataBase {
             int i = 0;
             System.out.printf("Card data for user %s is:\n", UserName);
             /**узнать количество строк массива*/
-
             while (resultSetTemp.next()) {
                 count++;
             }
