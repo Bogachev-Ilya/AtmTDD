@@ -120,7 +120,7 @@ public class Atm {
 
     public boolean depositMoney(float money) {
         if (money>=0){
-           this.creditCard.setAmount(money);
+           this.creditCard.setAmount(money+creditCard.getAmount());
             return true;
         }else {
           return false;

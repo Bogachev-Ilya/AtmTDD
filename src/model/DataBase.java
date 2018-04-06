@@ -60,7 +60,7 @@ public class DataBase {
     }
 
     public void initDataBase(String URL) {
-        if (!(checkDBExist())) {
+        if (!(checkDBExist("Users"))) {
 
             try (Connection connection = DriverManager.getConnection(URL)) {
                 Statement statement = connection.createStatement();
@@ -99,14 +99,14 @@ public class DataBase {
         }
     }
 
-    private boolean checkDBExist() {
+    private boolean checkDBExist(String name) {
         try {
             Class.forName("org.sqlite.JDBC"); //Register JDBC Driver
             Connection conn = DriverManager.getConnection(Controller.getInstance().getURL());
             ResultSet resultSet = conn.getMetaData().getCatalogs();
             while (resultSet.next()) {
                 String databaseName = resultSet.getString(1);
-                if (databaseName.equals("banks.db")) {
+                if (databaseName.equals(name)) {
                     return true;
 
 
@@ -165,7 +165,6 @@ public class DataBase {
                 password = passwords.get(cardPosition);
                 amount = userCardAmounts.get(cardPosition);
                 bankName =bankNames.get(cardPosition);
-
             }
 
 

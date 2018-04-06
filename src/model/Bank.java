@@ -10,7 +10,7 @@ public class Bank {
         this.name = name;
     }
     public Bank (){
-
+    creditCard=emittedCard();
     }
     public Bank(List name){
         this.setName(name);
@@ -82,7 +82,6 @@ public class Bank {
         user = new User();
         user.setName(Controller.getInstance().getUserName());
         user.setBank(Controller.getInstance().getDataBase().getBankName());
-        creditCard = emittedCard();
         creditCard.setPassword(Controller.getInstance().getDataBase().getPassword());
         creditCard.setAmount(Controller.getInstance().getDataBase().getAmount());
         creditCard.setAccountNumber(Controller.getInstance().getCardNumber());

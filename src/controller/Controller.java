@@ -19,6 +19,10 @@ public class Controller {
     private String cardNumber;
     private String URL;
     private String bankName;
+    private int password;
+    private float amount;
+    private String cardType;
+
 
     private Controller() {
     }
@@ -65,7 +69,25 @@ public class Controller {
         return dataBase;
     }
 
+    public int getPassword() {
+        return password;
+    }
 
+    public void setPassword(int password) {
+        this.password = password;
+    }
+
+    public float getAmount() {
+        return amount;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
 
     public void setDataBase(DataBase dataBase) {
         this.dataBase = dataBase;
