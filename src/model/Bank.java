@@ -9,6 +9,9 @@ public class Bank {
     public Bank (String name){
         this.name = name;
     }
+    public Bank (){
+    creditCard=emittedCard();
+    }
     public Bank(List name){
         this.setName(name);
     }
@@ -75,10 +78,10 @@ public class Bank {
         VTB, SBERBANK, MOSCOWCREDIT, ALPHABANK
     }
     public void init() {
+        this.setName(Controller.getInstance().getDataBase().getBankName());
         user = new User();
         user.setName(Controller.getInstance().getUserName());
         user.setBank(Controller.getInstance().getDataBase().getBankName());
-        creditCard = this.emittedCard();
         creditCard.setPassword(Controller.getInstance().getDataBase().getPassword());
         creditCard.setAmount(Controller.getInstance().getDataBase().getAmount());
         creditCard.setAccountNumber(Controller.getInstance().getCardNumber());

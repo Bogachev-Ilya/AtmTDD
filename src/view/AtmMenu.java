@@ -43,6 +43,9 @@ public class AtmMenu extends JFrame {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                /**записываем сумму на карте в базу данных после всех операций*/
+               Controller.getInstance().getDataBase().updateCardAmount
+                       (Controller.getInstance().getAtm().getCreditCard().getAmount(),Controller.getInstance().getURL());
                 Controller.getInstance().getAtm().removeCard();
                 setVisible(false);
                 System.exit(1);
@@ -156,7 +159,7 @@ public class AtmMenu extends JFrame {
                             /**если выбрано меню внести наличные, то передать значение на счет*/
                             switch (Controller.getInstance().getMenu()) {
                                 case DEPOSIT:
-                                    Controller.getInstance().setAmount(Float.parseFloat(dispFormattedTextField.getText()));
+                                    Controller.getInstance().getAtm().depositMoney(Float.parseFloat(dispFormattedTextField.getText()));
                                     windowForEnter.setVisible(false);
                                     Controller.getInstance().setMenu(Menu.CANCEL);
                                     break;
@@ -269,8 +272,10 @@ public class AtmMenu extends JFrame {
                 selCard.setInitialSelectionValue(Controller.getInstance().getDataBase().getUserCardNumbs());
                 String selectedCardNumber = (String) JOptionPane.showInputDialog
                         (usersFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null, Controller.getInstance().getDataBase().getUserCardNumbs(), Controller.getInstance().getDataBase().getUserCardNumbs()[0]);
-                System.err.println(Arrays.toString(Controller.getInstance().getDataBase().getUserCardNumbs()));
+                //System.err.println(Arrays.toString(Controller.getInstance().getDataBase().getUserCardNumbs()));
                 Controller.getInstance().setCardNumber(selectedCardNumber);
+                /**инициализируем пользователя и карту*/
+                Controller.getInstance().getBank().init();
                 usersFrame.setVisible(false);
                 insertCardWindow();
 

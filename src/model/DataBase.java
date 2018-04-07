@@ -3,6 +3,7 @@ package model;
 import controller.Controller;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
@@ -10,9 +11,9 @@ public class DataBase {
     private Vector<String> users;
     private String[] userCardNumbs;
     private Vector<Float> userCardAmounts = new Vector<>();
-    private List <Integer> passwords;
-    private List<String> cardTypes;
-    private List<String> bankNames;
+    private List<Integer> passwords = new ArrayList<>();
+    private List<String> cardTypes = new ArrayList<>();
+    private List<String> bankNames = new ArrayList<>();
     private String bankName;
     private Integer password;
     private String cardType;
@@ -59,12 +60,10 @@ public class DataBase {
     }
 
     public void initDataBase(String URL) {
-        if (checkDBExist()) {
-        } else
+        if (!(checkDBExist())) {
             try (Connection connection = DriverManager.getConnection(URL)) {
                 Statement statement = connection.createStatement();
                 /**база данных содержащая имя, счет и банк, являтся primary*/
-                statement.executeUpdate("DROP TABLE IF EXISTS Users;");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Users" +
                         "(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, User TEXT, Bank TEXT, Account TEXT);");
                 statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
@@ -77,7 +76,6 @@ public class DataBase {
                         "VALUES ('Kirill', 'MOSCOWCREDIT', '656577773344');");
                 /**таблица с номерами карт пользователей*/
                 statement.execute("PRAGMA foreign_keys=on;");
-                statement.executeUpdate("DROP TABLE IF EXISTS Cards");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Cards" +
                         "(CId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, CardType TEXT, CardNumber TEXT, Password INTEGER, Amount FLOAT, Id Integer, FOREIGN KEY (Id) REFERENCES Users(Id) );");
                 statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
@@ -90,25 +88,26 @@ public class DataBase {
                         "VALUES ('MasterCard', '456788889994563', 2345, 67899, 1)");
                 statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
                         "VALUES ('VISA', '678988669995454', 3344, 67899, 4)");
-
-
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+        }
     }
 
     private boolean checkDBExist() {
         try {
             Class.forName("org.sqlite.JDBC"); //Register JDBC Driver
             Connection conn = DriverManager.getConnection(Controller.getInstance().getURL());
-            ResultSet resultSet = conn.getMetaData().getCatalogs();
+            Statement statement = conn.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM sqlite_master WHERE type='table';");
             while (resultSet.next()) {
                 String databaseName = resultSet.getString(1);
-                if (databaseName.equals("banks.db")) {
+                if (databaseName.equals("table")) {
                     return true;
                 }
             }
             resultSet.close();
+            conn.close();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +128,6 @@ public class DataBase {
             int i = 0;
             System.out.printf("Card data for user %s is:\n", UserName);
             /**узнать количество строк массива*/
-
             while (resultSetTemp.next()) {
                 count++;
             }
@@ -149,19 +147,18 @@ public class DataBase {
                 i++;
             }
             /**перебрать коллекцию карт и установить значения параметров карты*/
-            if (userCardNumbs.length!=0){
-                    int cardPosition = 0;
+            if (userCardNumbs.length != 0) {
+                int cardPosition = 0;
                 /**нати позицию карты в массиве, и по этой позиции выбрать остальные значения карт*/
                 for (int j = 0; j < userCardNumbs.length; j++) {
-                    if (userCardNumbs[i].equals(Controller.getInstance().getCardNumber())){
-                        cardPosition=i;
+                    if (userCardNumbs[j].equals(Controller.getInstance().getCardNumber())) {
+                        cardPosition = j;
                     }
                 }
                 cardType = cardTypes.get(cardPosition);
                 password = passwords.get(cardPosition);
                 amount = userCardAmounts.get(cardPosition);
-                bankName =bankNames.get(cardPosition);
-
+                bankName = bankNames.get(cardPosition);
             }
 
 
@@ -173,7 +170,7 @@ public class DataBase {
     public void selUsers(String URL) {
         try (Connection connection = DriverManager.getConnection(URL)) {
             Statement statement = connection.createStatement();
-             ResultSet usersNameSet = statement.executeQuery("SELECT User From Users;");
+            ResultSet usersNameSet = statement.executeQuery("SELECT User From Users;");
             users = new Vector<>();
             while (usersNameSet.next()) {
                 users.add(usersNameSet.getString("User"));
@@ -183,6 +180,16 @@ public class DataBase {
         }
     }
 
-
+    /**метод обновляет данные по карте в базе данных, после совершения всех операций*/
+    public void updateCardAmount(float amount, String URL) {
+        try (Connection connection = DriverManager.getConnection(URL)) {
+            PreparedStatement statement=connection.prepareStatement("UPDATE Cards SET Amount=? "+
+            "WHERE CardNumber="+Controller.getInstance().getCardNumber());
+            statement.setFloat(1, amount);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 

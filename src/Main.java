@@ -19,13 +19,10 @@ public class Main {
         Controller.getInstance().setURL(URL);
         dataBase.initDataBase(URL);
         AtmMenu atmMenu = new AtmMenu();
+        Bank bank = new Bank();
+        Controller.getInstance().setBank(bank);
         Controller.getInstance().setAtm(atm);
         Controller.getInstance().setDataBase(dataBase);
         atmMenu.selectUserName();
-        Bank bank = new Bank(Controller.getInstance().getDataBase().getBankName());
-        bank.init();
-        Controller.getInstance().setBank(bank);
-
-
     }
 }
