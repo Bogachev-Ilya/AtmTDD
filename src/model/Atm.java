@@ -9,11 +9,10 @@ public class Atm {
     private InputStream inputStream;
     private Scanner scanner;
     private String bankName;
-    private boolean flag=true;
+    private boolean flag = true;
 
     public Atm() {
         this(System.in);
-
     }
 
     public Atm(InputStream mockinputStream) {
@@ -24,7 +23,6 @@ public class Atm {
     public Atm(Bank.List bankName) {
         this(System.in);
         this.bankName = bankName.toString();
-
     }
 
     public String getBankName() {
@@ -33,13 +31,12 @@ public class Atm {
 
     public void start(User user) {
         insertCard(user.getCreditCard());
-        if(checkPassword()){
+        if (checkPassword()) {
             startWork();
         }
     }
 
     public void startWork() {
-
         while (flag) {
             switch (atmMenu()) {
                 case CHECKBALANCE:
@@ -56,7 +53,7 @@ public class Atm {
                     }
                 case CANCEL:
                     removeCard();
-                    flag=false;
+                    flag = false;
                     break;
             }
         }
@@ -85,26 +82,27 @@ public class Atm {
     }
 
     public void insertCard(CreditCard creditCard) {
-        if (getCreditCard()==null){
+        if (getCreditCard() == null) {
             this.creditCard = creditCard;
-        }else {
+        } else {
             System.out.println("Карта уже вставлена, введите 0 чтобы извлечть карту: ");
-            while (true){
-                String number =scanner.nextLine();
-                if (Integer.valueOf(number)==0){
+            while (true) {
+                String number = scanner.nextLine();
+                if (Integer.valueOf(number) == 0) {
                     removeCard();
                     break;
-                }else {
+                } else {
                     continue;
                 }
             }
         }
     }
-    public boolean insertCardGui(CreditCard creditCard){
-        if (getCreditCard()==null){
+
+    public boolean insertCardGui(CreditCard creditCard) {
+        if (getCreditCard() == null) {
             this.creditCard = creditCard;
             return true;
-        }else {
+        } else {
             System.out.println("Карта уже вставлена, введите 0 чтобы извлечть карту: ");
             return false;
         }
@@ -119,19 +117,19 @@ public class Atm {
     }
 
     public boolean depositMoney(float money) {
-        if (money>=0){
-           this.creditCard.setAmount(money+creditCard.getAmount());
+        if (money >= 0) {
+            this.creditCard.setAmount(money + creditCard.getAmount());
             return true;
-        }else {
-          return false;
+        } else {
+            return false;
         }
     }
 
     public boolean depositMoneyTest(int money) {
-        if (money>=0){
+        if (money >= 0) {
             this.creditCard.setTestamount(money);
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -140,15 +138,16 @@ public class Atm {
         if (this.creditCard.getAmount() >= money) {
             this.creditCard.setAmount(this.creditCard.getAmount() - money);
             return true;
-        }else
+        } else
             return false;
 
     }
+
     public boolean withdrawTest(int money) {
         if (this.creditCard.getTestamount() >= money) {
             this.creditCard.setTestamount(this.creditCard.getTestamount() - money);
             return true;
-        }else
+        } else
             return false;
 
     }

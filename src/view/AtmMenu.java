@@ -43,6 +43,9 @@ public class AtmMenu extends JFrame {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                /**записываем сумму на карте в базу данных после всех операций*/
+               Controller.getInstance().getDataBase().updateCardAmount
+                       (Controller.getInstance().getAtm().getCreditCard().getAmount(),Controller.getInstance().getURL());
                 Controller.getInstance().getAtm().removeCard();
                 setVisible(false);
                 System.exit(1);

@@ -11,9 +11,9 @@ public class DataBase {
     private Vector<String> users;
     private String[] userCardNumbs;
     private Vector<Float> userCardAmounts = new Vector<>();
-    private List <Integer> passwords=new ArrayList<>();
-    private List<String> cardTypes=new ArrayList<>();
-    private List<String> bankNames=new ArrayList<>();
+    private List<Integer> passwords = new ArrayList<>();
+    private List<String> cardTypes = new ArrayList<>();
+    private List<String> bankNames = new ArrayList<>();
     private String bankName;
     private Integer password;
     private String cardType;
@@ -99,7 +99,7 @@ public class DataBase {
             Class.forName("org.sqlite.JDBC"); //Register JDBC Driver
             Connection conn = DriverManager.getConnection(Controller.getInstance().getURL());
             Statement statement = conn.createStatement();
-            ResultSet resultSet =  statement.executeQuery("SELECT * FROM sqlite_master WHERE type='table';");
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM sqlite_master WHERE type='table';");
             while (resultSet.next()) {
                 String databaseName = resultSet.getString(1);
                 if (databaseName.equals("table")) {
@@ -147,18 +147,18 @@ public class DataBase {
                 i++;
             }
             /**перебрать коллекцию карт и установить значения параметров карты*/
-            if (userCardNumbs.length!=0){
-                    int cardPosition = 0;
+            if (userCardNumbs.length != 0) {
+                int cardPosition = 0;
                 /**нати позицию карты в массиве, и по этой позиции выбрать остальные значения карт*/
                 for (int j = 0; j < userCardNumbs.length; j++) {
-                    if (userCardNumbs[j].equals(Controller.getInstance().getCardNumber())){
-                        cardPosition=j;
+                    if (userCardNumbs[j].equals(Controller.getInstance().getCardNumber())) {
+                        cardPosition = j;
                     }
                 }
                 cardType = cardTypes.get(cardPosition);
                 password = passwords.get(cardPosition);
                 amount = userCardAmounts.get(cardPosition);
-                bankName =bankNames.get(cardPosition);
+                bankName = bankNames.get(cardPosition);
             }
 
 
@@ -170,7 +170,7 @@ public class DataBase {
     public void selUsers(String URL) {
         try (Connection connection = DriverManager.getConnection(URL)) {
             Statement statement = connection.createStatement();
-             ResultSet usersNameSet = statement.executeQuery("SELECT User From Users;");
+            ResultSet usersNameSet = statement.executeQuery("SELECT User From Users;");
             users = new Vector<>();
             while (usersNameSet.next()) {
                 users.add(usersNameSet.getString("User"));
@@ -180,6 +180,16 @@ public class DataBase {
         }
     }
 
-
+    /**метод обновляет данные по карте в базе данных, после совершения всех операций*/
+    public void updateCardAmount(float amount, String URL) {
+        try (Connection connection = DriverManager.getConnection(URL)) {
+            PreparedStatement statement=connection.prepareStatement("UPDATE Cards SET Amount=? "+
+            "WHERE CardNumber="+Controller.getInstance().getCardNumber());
+            statement.setFloat(1, amount);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
 
