@@ -286,13 +286,11 @@ public class AtmMenu extends JFrame {
                                 cardsListForUser, cardsListForUser[0]);
                 controller.setCardNumber(selectedCardNumber);
                 /**создаем банк и передаем его в контроллер*/
-                Bank bank = new Bank();
-                bank.init();
+                controller.initBank();
                 /**инициализируем карту*/
                 controller.setCreditCard(cardsDao.getSelectedCard(selectedCardNumber));
                 /**создаем ATM*/
-                Atm atm = new Atm(controller.getUser().getBank());
-                controller.setAtm(atm);
+                controller.initAtm();
                 usersFrame.setVisible(false);
                 insertCardWindow();
 

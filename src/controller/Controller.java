@@ -21,6 +21,7 @@ public class Controller {
     private String cardType;
     private User user;
     private CreditCard creditCard;
+    private Bank bank;
 
 
     private Controller() {
@@ -133,5 +134,26 @@ public class Controller {
 
     public void setCreditCard(CreditCard creditCard) {
         this.creditCard = creditCard;
+    }
+
+    public void initBank() {
+        bank = new Bank();
+        bank.init();
+    }
+
+    public CreditCard getCreditCard() {
+        return creditCard;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+    public void initAtm() {
+        atm = new Atm();
     }
 }
