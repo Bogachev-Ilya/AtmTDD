@@ -1,8 +1,13 @@
 package model;
 
 public class CreditCard {
-    private float amount;
-    private int password;
+    private Float amount;
+    private Integer password;
+    private String cardType;
+    private String cardNumber;
+    private int testamount;
+    private Integer cId;
+    private Integer iD;
 
     public int getTestamount() {
         return testamount;
@@ -12,21 +17,31 @@ public class CreditCard {
         this.testamount = testamount;
     }
 
-    private int testamount;
-
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
     }
 
-    private String accountNumber;
+    public CreditCard(){ }
 
-    public CreditCard(){
-
-    }
-
-    public CreditCard(float amount, int password) {
+    public CreditCard(Float amount, Integer password) {
         this.password =password;
         this.amount = amount;
+    }
+
+    public CreditCard(Float amount, Integer password, String cardType, String cardNumber, Integer cId, Integer iD) {
+        this.amount = amount;
+        this.password = password;
+        this.cardType = cardType;
+        this.cardNumber = cardNumber;
+        this.cId = cId;
+        this.iD = iD;
+    }
+
+    public CreditCard(Float amount, Integer password, String cardType, String cardNumber) {
+        this.amount = amount;
+        this.password = password;
+        this.cardType = cardType;
+        this.cardNumber = cardNumber;
     }
 
     public CreditCard(int testamount, int password){
@@ -34,29 +49,55 @@ public class CreditCard {
         this.password = password;
     }
 
-    public CreditCard(String accoutNumber, int password) {
-        this.accountNumber =accoutNumber;
+    public CreditCard(String cardNumber, int password) {
+        this.cardNumber = cardNumber;
         this.password=password;
-        setAmount(0);
+        setTestamount(0);
     }
 
-    public float getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
-        this.amount = amount;
-    }
 
-    public int getPassword() {
+    public Integer getPassword() {
         return password;
     }
 
-    public void setPassword(int password){
-        this.password =password;
+
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public void setAmount(Float amount) {
+        this.amount = amount;
+    }
+
+    public void setPassword(Integer password) {
+        this.password = password;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public Integer getcId() {
+        return cId;
+    }
+
+    public void setcId(Integer cId) {
+        this.cId = cId;
+    }
+
+    public Integer getiD() {
+        return iD;
+    }
+
+    public void setiD(Integer iD) {
+        this.iD = iD;
     }
 }

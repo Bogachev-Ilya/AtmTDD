@@ -1,10 +1,9 @@
 package controller;
 
-import model.Atm;
-import model.Bank;
-import model.DataBase;
+import model.*;
 import view.AtmMenu;
 
+import javax.jws.soap.SOAPBinding;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,16 +11,16 @@ import java.util.Vector;
 
 public class Controller {
     private Atm atm;
-    private Bank bank;
     private AtmMenu.Menu menu;
     private DataBase dataBase;
     private String userName;
     private String cardNumber;
-    private String URL;
     private String bankName;
     private int password;
     private float amount;
     private String cardType;
+    private User user;
+    private CreditCard creditCard;
 
 
     private Controller() {
@@ -57,14 +56,6 @@ public class Controller {
         this.atm = atm;
     }
 
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
-    }
-
     public DataBase getDataBase() {
         return dataBase;
     }
@@ -98,7 +89,7 @@ public class Controller {
     }
 
     public boolean insertCard() {
-        if (Controller.getInstance().getAtm().insertCardGui(Controller.getInstance().getBank().getCreditCard())) {
+        if (atm.insertCardGui(creditCard)) {
             return true;
         } else {
             return false;
@@ -106,12 +97,12 @@ public class Controller {
     }
 
     public double getBalance() {
-        double amount = bank.getCreditCard().getAmount();
+        float amount = atm.getCreditCard().getAmount();
         return amount;
     }
 
     public void setAmount(float amount) {
-        bank.getCreditCard().setAmount(amount);
+        atm.getCreditCard().setAmount(amount);
     }
 
     public void setMenu(AtmMenu.Menu menu) {
@@ -119,27 +110,10 @@ public class Controller {
     }
 
     public boolean checkPassword(int passwordNumb) {
-        if (Controller.getInstance().getAtm().getCreditCard().getPassword() == passwordNumb) {
+        if (atm.getCreditCard().getPassword() == passwordNumb) {
             return true;
         } else return false;
     }
-
-    public Vector<String> getUsers() {
-
-        if (!Controller.getInstance().getDataBase().getUsers().isEmpty()) {
-            return new Vector<>(Controller.getInstance().getDataBase().getUsers());
-        }
-        return null;
-    }
-
-    public void setURL(String URL) {
-        this.URL = URL;
-    }
-
-    public String getURL() {
-        return URL;
-    }
-
 
     public String getBankName() {
         return bankName;
@@ -147,5 +121,17 @@ public class Controller {
 
     public void setBankName(String bankName) {
         this.bankName = bankName;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setCreditCard(CreditCard creditCard) {
+        this.creditCard = creditCard;
     }
 }
