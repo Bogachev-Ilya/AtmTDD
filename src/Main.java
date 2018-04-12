@@ -7,7 +7,10 @@ import view.AtmMenu;
 public class Main {
 
     public static void main(String[] args) {
+        DataBase dataBase = new DataBase();
+        dataBase.initDataBase();
         AtmMenu atmMenu = new AtmMenu();
         atmMenu.selectUserName();
+
     }
 }

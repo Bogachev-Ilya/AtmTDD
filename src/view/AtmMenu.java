@@ -12,10 +12,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class AtmMenu extends JFrame {
+public class AtmMenu extends JFrame{
     private JButton deposit = new JButton("Deposit money");
     private JButton withdraw = new JButton("Withdraw");
     private Controller controller=Controller.getInstance();
+
 
     /**
      * служит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
@@ -244,7 +245,7 @@ public class AtmMenu extends JFrame {
         windowEnterAmount("Password");
     }
 
-    /**меню выбора пользователя*/
+    /**меню выбора пользователя-начало работы программы*/
     public void selectUserName(){
         JFrame usersFrame = new JFrame();
         usersFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);

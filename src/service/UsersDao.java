@@ -4,8 +4,6 @@ import model.ConnectionFactory;
 import model.User;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 public class UsersDao {
@@ -41,7 +39,6 @@ public class UsersDao {
     }
 
     /**получить список имен всех пользователей*/
-
     public Vector<String> getAllUserNames() {
         try(Connection connection = ConnectionFactory.getConnection()){
             Statement statement = connection.createStatement();
@@ -55,6 +52,40 @@ public class UsersDao {
         }
         return null;
     }
+    /**добавить пользователя в базу данных*/
+    public void addUser(String name, String bankName, String account, String URL){
+        try (Connection connection = DriverManager.getConnection(URL)) {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (User, Bank, Account)" +
+                    "VALUES (?, ?, ?);");
+            /**метод проверки сущесвует ли такой пользователь уже в базе данных*/
+            if (!isUserExist(name, account, URL)){
+                ps.setString(1,name);
+                ps.setString(2,bankName);
+                ps.setString(3, account);
+                ps.executeUpdate();
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isUserExist(String name, String account, String URL) {
+        try(Connection connection = DriverManager.getConnection(URL)) {
+            PreparedStatement ps = connection.prepareStatement("SELECT User, Account FROM Users " +
+                    "WHERE (User=? AND Account = ?);");
+            ps.setString(1, name);
+            ps.setString(2, account);
+            ResultSet rs =ps.executeQuery();
+            if (rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public Vector<String> getUsers() {
         return users;
@@ -63,4 +94,5 @@ public class UsersDao {
     public void setUsers(Vector<String> users) {
         this.users = users;
     }
+
 }
