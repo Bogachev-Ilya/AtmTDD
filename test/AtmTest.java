@@ -2,6 +2,7 @@ import model.Atm;
 import model.Bank;
 import model.CreditCard;
 import model.User;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -12,6 +13,8 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.Assert.*;
 
 public class AtmTest {
+
+
 
     @Test
     public void testInsertCreditCard() throws UnsupportedEncodingException {
@@ -138,7 +141,7 @@ public class AtmTest {
        CreditCard creditCard =  bank.emittedCard();
        creditCard.setPassword(password);
        creditCard.setTestamount(0);
-       creditCard.setAccountNumber(accountNumber);
+       creditCard.setCardNumber(accountNumber);
        Atm atm = new Atm(mockinputStream);
        atm.insertCard(creditCard);
        assertTrue(atm.checkPassword());

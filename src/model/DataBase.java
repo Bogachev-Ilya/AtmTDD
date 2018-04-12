@@ -3,91 +3,68 @@ package model;
 import controller.Controller;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+
 
 public class DataBase {
-    private Vector<String> users;
-    private String[] userCardNumbs;
-    private Vector<Float> userCardAmounts = new Vector<>();
-    private List<Integer> passwords = new ArrayList<>();
-    private List<String> cardTypes = new ArrayList<>();
-    private List<String> bankNames = new ArrayList<>();
-    private String bankName;
-    private Integer password;
-    private String cardType;
-    private Float amount;
 
-    public Object[] getUserCardNumbs() {
-        return userCardNumbs;
-    }
 
-    public void setUserCardNumbs(String[] userCardNumbs) {
-        this.userCardNumbs = userCardNumbs;
-    }
 
-    public Vector<Float> getUserCardAmount() {
-        return userCardAmounts;
-    }
-
-    public void setUserCardAmount(Vector<Float> userCardAmount) {
-        this.userCardAmounts = userCardAmount;
-    }
-
-    public Vector<String> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Vector<String> users) {
-        this.users = users;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public Integer getPassword() {
-        return password;
-    }
-
-    public String getCardType() {
-        return cardType;
-    }
-
-    public Float getAmount() {
-        return amount;
-    }
-
-    public void initDataBase(String URL) {
+    public void initDataBase() {
         if (!(checkDBExist())) {
-            try (Connection connection = DriverManager.getConnection(URL)) {
+            try (Connection connection = ConnectionFactory.getConnection()) {
                 Statement statement = connection.createStatement();
                 /**база данных содержащая имя, счет и банк, являтся primary*/
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Users" +
                         "(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, User TEXT, Bank TEXT, Account TEXT);");
-                statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
-                        "VALUES ('Jonson', 'SBERBANK', '222244442222');");
-                statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
-                        "VALUES ('Valeriya', 'VTB', '445588889494');");
-                statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
-                        "VALUES ('Brayn', 'ALPHABANK', '332245678332');");
-                statement.executeUpdate("INSERT INTO Users (User, Bank, Account)" +
-                        "VALUES ('Kirill', 'MOSCOWCREDIT', '656577773344');");
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (User, Bank, Account)" +
+                        "VALUES (?, ?, ?);");
+                ps.setString(1,"Jonson");
+                ps.setString(2,"SBERBANK");
+                ps.setString(3, "222244442222");
+                ps.setString(1,"Valeriya");
+                ps.setString(2,"VTB");
+                ps.setString(3, "445588889494");
+                ps.setString(1,"Brayn");
+                ps.setString(2,"ALPHABANK");
+                ps.setString(3, "332245678332");
+                ps.setString(1,"Kirill");
+                ps.setString(2,"MOSCOWCREDIT");
+                ps.setString(3, "656577773344");
+                ps.executeUpdate();
+
                 /**таблица с номерами карт пользователей*/
                 statement.execute("PRAGMA foreign_keys=on;");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Cards" +
                         "(CId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, CardType TEXT, CardNumber TEXT, Password INTEGER, Amount FLOAT, Id Integer, FOREIGN KEY (Id) REFERENCES Users(Id) );");
-                statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
-                        "VALUES ('VISA', '4567888899993456', 1234, 200, 1)");
-                statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
-                        "VALUES ('VISA', '3322888899998976', 5678, 14500, 2)");
-                statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
-                        "VALUES ('MasterCard', '245688889990876', 7890, 58700, 3)");
-                statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
-                        "VALUES ('MasterCard', '456788889994563', 2345, 67899, 1)");
-                statement.executeUpdate("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
-                        "VALUES ('VISA', '678988669995454', 3344, 67899, 4)");
+                PreparedStatement ps1 = connection.prepareStatement("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )"+
+                        "VALUES (?, ?, ?, ?, ?)");
+                ps1.setString(1,"VISA");
+                ps1.setString(2, "4567888899993456");
+                ps1.setInt(3, 1234);
+                ps1.setFloat(4, 200F);
+                ps1.setInt(5, 1);
+                ps1.setString(1,"VISA");
+                ps1.setString(2, "3322888899998976");
+                ps1.setInt(3, 5678);
+                ps1.setFloat(4, 14500F);
+                ps1.setInt(5, 2);
+                ps1.setString(1,"MasterCard");
+                ps1.setString(2, "245688889990876");
+                ps1.setInt(3, 7890);
+                ps1.setFloat(4, 58700F);
+                ps1.setInt(5, 3);
+                ps1.setString(1,"MasterCard");
+                ps1.setString(2, "456788889994563");
+                ps1.setInt(3, 2345);
+                ps1.setFloat(4, 67899F);
+                ps1.setInt(5, 1);
+                ps1.setString(1,"VISA");
+                ps1.setString(2, "678988669995454");
+                ps1.setInt(3, 3344);
+                ps1.setFloat(4, 6900F);
+                ps1.setInt(5, 4);
+                ps1.executeUpdate();
+
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -96,8 +73,7 @@ public class DataBase {
 
     private boolean checkDBExist() {
         try {
-            Class.forName("org.sqlite.JDBC"); //Register JDBC Driver
-            Connection conn = DriverManager.getConnection(Controller.getInstance().getURL());
+            Connection conn = ConnectionFactory.getConnection();
             Statement statement = conn.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * FROM sqlite_master WHERE type='table';");
             while (resultSet.next()) {
@@ -112,77 +88,18 @@ public class DataBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
+/**создать базу данных*/
+        createNewDataBase("banks.db");
         return false;
     }
 
 
-    public void selUserCard(String URL, String UserName) {
-        try (Connection connection = DriverManager.getConnection(URL)) {
-            PreparedStatement statement1 = connection.prepareStatement("SELECT CardType, CardNumber, Password, Amount FROM Cards, Users " +
-                    " WHERE Users.Id=Cards.Id AND User= ?;");
-            statement1.setString(1, UserName);
-            ResultSet resultSetTemp = statement1.executeQuery();
-            /**узнать количество строк*/
-            int count = 0;
-            /**задать размер массива*/
-            int i = 0;
-            System.out.printf("Card data for user %s is:\n", UserName);
-            /**узнать количество строк массива*/
-            while (resultSetTemp.next()) {
-                count++;
-            }
-            //необходим повторный вызор,так как предыдущий зарыт после перебора
-            userCardNumbs = new String[count];
-            PreparedStatement statement = connection.prepareStatement("SELECT CardType, CardNumber, Password, Amount, Bank FROM Cards, Users " +
-                    " WHERE Users.Id=Cards.Id AND User= ?;");
-            statement.setString(1, UserName);
-            ResultSet userCardsDataSet = statement.executeQuery();
-
-            while (userCardsDataSet.next()) {
-                cardTypes.add(userCardsDataSet.getString("CardType"));
-                userCardNumbs[i] = (userCardsDataSet.getString("CardNumber"));
-                passwords.add(userCardsDataSet.getInt("Password"));
-                userCardAmounts.add(userCardsDataSet.getFloat("Amount"));
-                bankNames.add("Bank");
-                i++;
-            }
-            /**перебрать коллекцию карт и установить значения параметров карты*/
-            if (userCardNumbs.length != 0) {
-                int cardPosition = 0;
-                /**нати позицию карты в массиве, и по этой позиции выбрать остальные значения карт*/
-                for (int j = 0; j < userCardNumbs.length; j++) {
-                    if (userCardNumbs[j].equals(Controller.getInstance().getCardNumber())) {
-                        cardPosition = j;
-                    }
-                }
-                cardType = cardTypes.get(cardPosition);
-                password = passwords.get(cardPosition);
-                amount = userCardAmounts.get(cardPosition);
-                bankName = bankNames.get(cardPosition);
-            }
 
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void selUsers(String URL) {
-        try (Connection connection = DriverManager.getConnection(URL)) {
-            Statement statement = connection.createStatement();
-            ResultSet usersNameSet = statement.executeQuery("SELECT User From Users;");
-            users = new Vector<>();
-            while (usersNameSet.next()) {
-                users.add(usersNameSet.getString("User"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
     /**метод обновляет данные по карте в базе данных, после совершения всех операций*/
-    public void updateCardAmount(float amount, String URL) {
-        try (Connection connection = DriverManager.getConnection(URL)) {
+    public void updateCardAmount(float amount) {
+        try (Connection connection = ConnectionFactory.getConnection()) {
             PreparedStatement statement=connection.prepareStatement("UPDATE Cards SET Amount=? "+
             "WHERE CardNumber="+Controller.getInstance().getCardNumber());
             statement.setFloat(1, amount);
@@ -191,5 +108,19 @@ public class DataBase {
             e.printStackTrace();
         }
     }
+
+    /**создать новую базу данных*/
+    public void createNewDataBase(String DBName){
+        String url = "jdbc: sqlite: users/iliabogachev/IdeaProjects/AtmTDD/"+ DBName;
+        try (Connection connection = DriverManager.getConnection(url)){
+            if (connection!=null){
+                DatabaseMetaData databaseMetaData = connection.getMetaData();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
 

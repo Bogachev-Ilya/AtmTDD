@@ -1,4 +1,3 @@
-import model.Bank;
 import model.CreditCard;
 import model.User;
 import org.junit.Test;
@@ -17,6 +16,5 @@ public class UserTest {
         user.setCreditCard(creditCard);
         assertEquals(name, user.getName());
         assertEquals("VTB", user.getBank());
-        assertEquals(creditCard, user.getCreditCard());
     }
 }

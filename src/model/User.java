@@ -5,8 +5,42 @@ import java.util.Objects;
 public class User {
     private String name;
     private String bank;
+    private Integer id;
+    private String account;
     private CreditCard creditCard;
     private Bank.List banks;
+
+    public User(){ }
+
+    public User(String name, String bank, Integer id, String account) {
+        this.name = name;
+        this.bank = bank;
+        this.id = id;
+        this.account = account;
+    }
+
+    public User(String name, String bank, String account) {
+        this.name = name;
+        this.bank = bank;
+        this.account = account;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
     public String getBank() {
         return bank;
     }
@@ -26,8 +60,6 @@ public class User {
     public void setName(String name) {
         this.name = name;
     }
-
-
 
     public String getName() {
         return name;

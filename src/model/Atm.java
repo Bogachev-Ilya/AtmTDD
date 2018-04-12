@@ -15,12 +15,16 @@ public class Atm {
         this(System.in);
     }
 
+    public Atm(String bankName){
+        this.bankName = bankName;
+    }
+
     public Atm(InputStream mockinputStream) {
         this.inputStream = mockinputStream;
         scanner = new Scanner(mockinputStream);
     }
 
-    public Atm(Bank.List bankName) {
+    public Atm(Bank.List bankNam) {
         this(System.in);
         this.bankName = bankName.toString();
     }
