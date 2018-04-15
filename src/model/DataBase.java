@@ -1,12 +1,13 @@
 package model;
 
 import controller.Controller;
+import service.CardsDao;
+import service.UsersDao;
 
 import java.sql.*;
 
 
 public class DataBase {
-
 
 
     public void initDataBase() {
@@ -16,55 +17,22 @@ public class DataBase {
                 /**база данных содержащая имя, счет и банк, являтся primary*/
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Users" +
                         "(Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, User TEXT, Bank TEXT, Account TEXT);");
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO Users (User, Bank, Account)" +
-                        "VALUES (?, ?, ?);");
-                ps.setString(1,"Jonson");
-                ps.setString(2,"SBERBANK");
-                ps.setString(3, "222244442222");
-                ps.setString(1,"Valeriya");
-                ps.setString(2,"VTB");
-                ps.setString(3, "445588889494");
-                ps.setString(1,"Brayn");
-                ps.setString(2,"ALPHABANK");
-                ps.setString(3, "332245678332");
-                ps.setString(1,"Kirill");
-                ps.setString(2,"MOSCOWCREDIT");
-                ps.setString(3, "656577773344");
-                ps.executeUpdate();
-
+                /**добавляем всех пользователей через UsersDao*/
+                UsersDao usersDao = new UsersDao();
+                usersDao.addUser("Jonson", "SBERBANK", "222244442222", ConnectionFactory.URL);
+                usersDao.addUser("Valeriya", "VTB", "445588889494", ConnectionFactory.URL);
+                usersDao.addUser("Brayn", "ALPHABANK", "332245678332", ConnectionFactory.URL);
+                usersDao.addUser("Kirill", "MOSCOWCREDIT", "656577773344", ConnectionFactory.URL);
                 /**таблица с номерами карт пользователей*/
                 statement.execute("PRAGMA foreign_keys=on;");
                 statement.executeUpdate("CREATE TABLE IF NOT EXISTS Cards" +
                         "(CId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, CardType TEXT, CardNumber TEXT, Password INTEGER, Amount FLOAT, Id Integer, FOREIGN KEY (Id) REFERENCES Users(Id) );");
-                PreparedStatement ps1 = connection.prepareStatement("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )"+
-                        "VALUES (?, ?, ?, ?, ?)");
-                ps1.setString(1,"VISA");
-                ps1.setString(2, "4567888899993456");
-                ps1.setInt(3, 1234);
-                ps1.setFloat(4, 200F);
-                ps1.setInt(5, 1);
-                ps1.setString(1,"VISA");
-                ps1.setString(2, "3322888899998976");
-                ps1.setInt(3, 5678);
-                ps1.setFloat(4, 14500F);
-                ps1.setInt(5, 2);
-                ps1.setString(1,"MasterCard");
-                ps1.setString(2, "245688889990876");
-                ps1.setInt(3, 7890);
-                ps1.setFloat(4, 58700F);
-                ps1.setInt(5, 3);
-                ps1.setString(1,"MasterCard");
-                ps1.setString(2, "456788889994563");
-                ps1.setInt(3, 2345);
-                ps1.setFloat(4, 67899F);
-                ps1.setInt(5, 1);
-                ps1.setString(1,"VISA");
-                ps1.setString(2, "678988669995454");
-                ps1.setInt(3, 3344);
-                ps1.setFloat(4, 6900F);
-                ps1.setInt(5, 4);
-                ps1.executeUpdate();
-
+                CardsDao cardsDao = new CardsDao();
+                cardsDao.addCard("VISA", "4567888899993456", 1234, 200F, 1, ConnectionFactory.URL);
+                cardsDao.addCard("VISA", "3322888899998976", 5678, 45232F, 2, ConnectionFactory.URL);
+                cardsDao.addCard("MasterCard", "245688889990876", 7890, 79F, 3, ConnectionFactory.URL);
+                cardsDao.addCard("MasterCard", "456788889994563", 2345, 67899F, 1, ConnectionFactory.URL);
+                cardsDao.addCard("VISA", "678988669995454", 3344, 1000000F, 4, ConnectionFactory.URL);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -88,32 +56,18 @@ public class DataBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-/**создать базу данных*/
+        /**создать базу данных*/
         createNewDataBase("banks.db");
         return false;
     }
 
-
-
-
-
-    /**метод обновляет данные по карте в базе данных, после совершения всех операций*/
-    public void updateCardAmount(float amount) {
-        try (Connection connection = ConnectionFactory.getConnection()) {
-            PreparedStatement statement=connection.prepareStatement("UPDATE Cards SET Amount=? "+
-            "WHERE CardNumber="+Controller.getInstance().getCardNumber());
-            statement.setFloat(1, amount);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**создать новую базу данных*/
-    public void createNewDataBase(String DBName){
-        String url = "jdbc: sqlite: users/iliabogachev/IdeaProjects/AtmTDD/"+ DBName;
-        try (Connection connection = DriverManager.getConnection(url)){
-            if (connection!=null){
+    /**
+     * создать новую базу данных
+     */
+    public void createNewDataBase(String DBName) {
+        String url = "jdbc: sqlite: users/iliabogachev/IdeaProjects/AtmTDD/" + DBName;
+        try (Connection connection = DriverManager.getConnection(url)) {
+            if (connection != null) {
                 DatabaseMetaData databaseMetaData = connection.getMetaData();
             }
         } catch (SQLException e) {

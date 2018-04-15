@@ -3,10 +3,7 @@ package service;
 import model.ConnectionFactory;
 import model.CreditCard;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,5 +72,39 @@ public class CardsDao {
         creditCard.setAmount(rs.getFloat("Amount"));
         creditCard.setiD(rs.getInt("Id"));
         return creditCard;
+    }
+
+    public void addCard(String cardType, String cardNumber, Integer password, Float amount, Integer userId, String URL){
+        try (Connection connection = DriverManager.getConnection(URL)) {
+            if (!isCardExist(cardType, cardNumber, URL)) {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO Cards (CardType, CardNumber, Password, Amount, Id )" +
+                    "VALUES (?, ?, ?, ?, ?)");
+            ps.setString(1, cardType);
+            ps.setString(2, cardNumber);
+            ps.setInt(3, password);
+            ps.setFloat(4, amount);
+            ps.setInt(5, userId);
+            ps.executeUpdate();
+        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isCardExist(String cardType, String cardNumber, String url) {
+        try(Connection connection =DriverManager.getConnection(url)) {
+            PreparedStatement ps = connection.prepareStatement("SELECT CardType, CardNumber FROM Cards" +
+                    " WHERE (CardType = ? AND CardNumber = ?)");
+            ps.setString(1, cardType);
+            ps.setString(2, cardNumber);
+            ResultSet rs=ps.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
