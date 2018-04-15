@@ -3,11 +3,12 @@ package service;
 import model.ConnectionFactory;
 import model.CreditCard;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardsDao {
+public class CardsDao implements Serializable{
     private List<CreditCardDto> creditCards = new ArrayList<>();
 
     /**получить коллекцию карт пользователя по номеру iD*/

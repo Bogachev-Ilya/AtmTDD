@@ -1,10 +1,11 @@
 package model;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.Scanner;
 
-public class Atm {
+public class Atm implements Serializable {
     private CreditCard creditCard;
     private InputStream inputStream;
     private Scanner scanner;

@@ -3,10 +3,11 @@ package service;
 import model.ConnectionFactory;
 import model.User;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.Vector;
 
-public class UsersDao {
+public class UsersDao implements Serializable {
     /**метод JOptionPane принимает только массивы или вектора для отображения списка пользователей*/
     private Vector<String> users =new Vector<>();
 
