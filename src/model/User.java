@@ -10,6 +10,7 @@ public class User implements Serializable{
     private String account;
     private CreditCard creditCard;
     private Bank.List banks;
+    private String creditCardNumber;
 
     public User(){ }
 
@@ -18,6 +19,14 @@ public class User implements Serializable{
         this.bank = bank;
         this.id = id;
         this.account = account;
+    }
+
+    public String getCreditCardNumber() {
+        return creditCardNumber;
+    }
+
+    public void setCreditCardNumber(String creditCardNumber) {
+        this.creditCardNumber = creditCardNumber;
     }
 
     public User(String name, String bank, String account) {
