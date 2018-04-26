@@ -1,36 +1,66 @@
 package server;
 
-import controller.Controller;
-import model.ConnectionFactory;
+import model.Atm;
+import model.CreditCard;
 import model.DataBase;
+import model.User;
+import service.CardsDao;
+import service.UsersDao;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.SQLException;
+
 
 public class Server {
-    public static void startServer() {
-        try (ServerSocket serverSocket = new ServerSocket(8844)) {
+    public static final int PORT = 8844;
+
+    public static void main(String[] args) throws InterruptedException, ClassNotFoundException {
+
+        try (ServerSocket serverSocket = new ServerSocket(PORT, 10)) {
+            /**инициализация базы данных на стороне сервера*/
+            DataBase dataBase = new DataBase();
+            dataBase.initDataBase();
             Socket client = serverSocket.accept();
             System.out.println("Connected...");
-            DataOutputStream outputStream = new DataOutputStream(client.getOutputStream());
+            //отправить данные пользователю
+            DataOutputStream out = new DataOutputStream(client.getOutputStream());
+            ObjectOutputStream obOut = new ObjectOutputStream(client.getOutputStream());
             System.out.println("OutputStream created");
-            DataInputStream inputStream = new DataInputStream(client.getInputStream());
+            //получить данные от пользователя
+            DataInputStream in = new DataInputStream(client.getInputStream());
+            ObjectInputStream obIn = new ObjectInputStream(client.getInputStream());
             System.out.println("InputStream created");
-            try (Connection connection = ConnectionFactory.getConnection()) {
-                DataBase dataBase = new DataBase();
-                dataBase.initDataBase();
-
-                while (!client.isClosed()) {
-                    /**Проверяем правильность ввода пароля*/
-                    String name = inputStream.readUTF();
+            while (!client.isClosed()) {
+                /**сначала считываем из базы данных имена пользователей и отправляем их клиенту*/
+                UsersDao usersDao = new UsersDao();
+                obOut.writeObject(usersDao.getAllUserNames());
+                Thread.sleep(3000);
+                /**получаем имя выбранного пользователя от клиента и создаем юзера, передаем его клиенту*/
+                String userName = in.readUTF();
+                System.out.println(userName);
+                User user = usersDao.getUserByUserName(userName);
+                obOut.writeObject(user);
+                obOut.flush();
+                CardsDao cardsDao = new CardsDao();
+                /**создать массив карт для отображения в меню выбора*/
+                Object[] cardsListForUser = new Object[cardsDao.getAllCardsForUser(user.getId()).size()];
+                for (int i = 0; i < cardsListForUser.length; i++) {
+                    /**записать в массив номера карт пользователя*/
+                    cardsListForUser[i] = cardsDao.getAllCardsForUser(user.getId()).get(i).getCardNumber();
                 }
-            } catch (SQLException e) {
-                e.printStackTrace();
+                /**передать массив клиенту для отображения в меню выбора карт*/
+                obOut.writeObject(cardsListForUser);
+                Thread.sleep(3000);
+                /**получить от клиента номер выбранной карты, создать объект и отправить его клиенту*/
+                CreditCard creditCard= cardsDao.getSelectedCard((String) obIn.readObject());
+                Thread.sleep(300);
+                obOut.writeObject(creditCard);
+                /**создать ATM и передать клиенту*/
+                Atm atm = new Atm();
+                Thread.sleep(200);
+                obOut.writeObject(atm);
+
 
             }
         } catch (IOException e) {
@@ -39,5 +69,8 @@ public class Server {
 
     }
 }
+
+
+
 
 

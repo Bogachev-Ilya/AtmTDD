@@ -8,7 +8,7 @@ import java.sql.*;
 
 
 public class DataBase {
-
+    final String url = "jdbc: sqlite: users/iliabogachev/IdeaProjects/AtmTDD/";
 
     public void initDataBase() {
         if (!(checkDBExist())) {
@@ -65,8 +65,7 @@ public class DataBase {
      * создать новую базу данных
      */
     public void createNewDataBase(String DBName) {
-        String url = "jdbc: sqlite: users/iliabogachev/IdeaProjects/AtmTDD/" + DBName;
-        try (Connection connection = DriverManager.getConnection(url)) {
+        try (Connection connection = DriverManager.getConnection(url+DBName)) {
             if (connection != null) {
                 DatabaseMetaData databaseMetaData = connection.getMetaData();
             }

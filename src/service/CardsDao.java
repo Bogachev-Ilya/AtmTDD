@@ -3,11 +3,12 @@ package service;
 import model.ConnectionFactory;
 import model.CreditCard;
 
+import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CardsDao {
+public class CardsDao implements Serializable{
     private List<CreditCardDto> creditCards = new ArrayList<>();
 
     /**получить коллекцию карт пользователя по номеру iD*/
@@ -31,6 +32,30 @@ public class CardsDao {
         }
         return null;
     }
+
+    /**получить коллекцию карт пользователя по номеру iD за исключением уже выбранной карты*/
+    public List<CreditCardDto> getCardsForUser(Integer UseriD, String cardNumber) {
+        try(Connection connection = ConnectionFactory.getConnection()){
+            PreparedStatement preparedStatement =connection.prepareStatement
+                    ("SELECT CId, CardType, CardNumber, Password, Amount, Id FROM Cards WHERE Id=? AND CardNumber<>?");
+            preparedStatement.setInt(1, UseriD);
+            preparedStatement.setString(2, cardNumber);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()){
+                CreditCardDto creditCardDto = new CreditCardDto
+                        (rs.getInt("CId"), rs.getString("CardType"),
+                                rs.getString("CardNumber"), rs.getInt("Password"),
+                                rs.getFloat("Amount"), rs.getInt("Id"));
+                creditCards.add(creditCardDto);
+            }
+            return creditCards;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public boolean updateCardAmount(Float amount, String cardNumber) {
         try(Connection connection = ConnectionFactory.getConnection()){
@@ -93,12 +118,12 @@ public class CardsDao {
 
     public boolean isCardExist(String cardType, String cardNumber, String url) {
         try(Connection connection =DriverManager.getConnection(url)) {
-            PreparedStatement ps = connection.prepareStatement("SELECT CardType, CardNumber FROM Cards" +
+            PreparedStatement ps = connection.prepareStatement("SELECT COUNT (*) FROM Cards" +
                     " WHERE (CardType = ? AND CardNumber = ?)");
             ps.setString(1, cardType);
             ps.setString(2, cardNumber);
             ResultSet rs=ps.executeQuery();
-            if(rs.next()){
+            if(rs.getInt("CardNumber")>0){
                 return true;
             }
 

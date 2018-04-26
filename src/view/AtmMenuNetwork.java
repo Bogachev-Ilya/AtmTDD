@@ -1,7 +1,8 @@
-/*
 package view;
 
 import controller.Controller;
+import service.CardsDao;
+import service.UsersDao;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,21 +10,67 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-public class AtmMenuServer extends JFrame {
+public class AtmMenuNetwork extends JFrame{
     private JButton deposit = new JButton("Deposit money");
     private JButton withdraw = new JButton("Withdraw");
+    private Controller controller=Controller.getInstance();
+    private boolean flag;
 
-    */
-/**
-     * Клиент-сервер версия меню - все данные, полученные от ввода пользователя передаются на сервер, обрабатываются запросы
-     * и передаются клиенту для отображения
-     *//*
-
+    /**
+     * служит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
+     */
     public enum Menu {
         WITHDRAW, DEPOSIT, CANCEL, PASSWORD
     }
 
-    public void showMenu() {
+    /**меню выбора пользователя-начало работы программы*/
+    public void selectUserName(){
+        JFrame usersFrame = new JFrame();
+        usersFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        usersFrame.setTitle("Select Name");
+        usersFrame.setLocationRelativeTo(null);
+        Font font = new Font("Arial", Font.PLAIN, 20);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        final JLabel label = new JLabel(" ");
+        label.setAlignmentX(LEFT_ALIGNMENT);
+        label.setFont(font);
+        usersFrame.add(label);
+        /**данные получаем из контроллера, который их передает через клиент от запроса на сервере*/
+        JComboBox userNameBox = new JComboBox(controller.getUsersName());
+        userNameBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        userNameBox.setFont(font);
+        panel.add(userNameBox);
+        usersFrame.add(panel);
+        usersFrame.setPreferredSize(new Dimension(300, 150));
+        usersFrame.pack();
+        usersFrame.setVisible(true);
+        userNameBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JComboBox box = (JComboBox) e.getSource();
+                String name = (String) box.getSelectedItem();
+                /**установить выбранное имя в контроллер*/
+                label.setText(name);
+                controller.setUserName(name);
+                /**отобразить список карт для выбранного пользователя*/
+                if (controller.getUserCardsList() != null) {
+                    /**окно выбора карт*/
+                    JOptionPane selCard = new JOptionPane();
+                    selCard.setInitialSelectionValue(controller.getUserCardsList()[0]);
+                    String selectedCardNumber = (String) JOptionPane.showInputDialog
+                            (usersFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null,
+                                    controller.getUserCardsList(), controller.getUserCardsList()[0]);
+                    controller.setCardNumber(selectedCardNumber);
+                    usersFrame.setVisible(false);
+                    insertCardWindow();
+                }
+
+            }
+        });
+    }
+
+   /* public void showMenu() {
         JFrame mainMenuFrame = new JFrame();
         mainMenuFrame.setTitle("Main menu");
         mainMenuFrame.setLocationRelativeTo(null);
@@ -45,12 +92,11 @@ public class AtmMenuServer extends JFrame {
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                */
-/**записываем сумму на карте в базу данных после всех операций*//*
-
-               Controller.getInstance().getDataBase().updateCardAmount
-                       (Controller.getInstance().getAtm().getCreditCard().getAmount(),Controller.getInstance().getURL());
-                Controller.getInstance().getAtm().removeCard();
+                *записываем сумму на карте в базу данных после всех операций
+                CardsDao cardsDao = new CardsDao();
+                *получаем остаток по карте и номер карты для записи данных
+                cardsDao.updateCardAmount(controller.getAtm().getCreditCard().getAmount(), controller.getAtm().getCreditCard().getCardNumber());                ;
+                controller.getAtm().removeCard();
                 setVisible(false);
                 System.exit(1);
             }
@@ -59,7 +105,7 @@ public class AtmMenuServer extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 windowEnterAmount("Withdraw");
-                Controller.getInstance().setMenu(Menu.WITHDRAW);
+                controller.setMenu(Menu.WITHDRAW);
             }
         });
 
@@ -67,7 +113,7 @@ public class AtmMenuServer extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 windowEnterAmount("Deposit");
-                Controller.getInstance().setMenu(Menu.DEPOSIT);
+                controller.setMenu(Menu.DEPOSIT);
             }
         });
         atmMenu.add(checkBalance);
@@ -87,9 +133,7 @@ public class AtmMenuServer extends JFrame {
         BorderLayout borderLayout = new BorderLayout();
         panel.setLayout(borderLayout);
         Font font = new Font("Arial", Font.PLAIN, 20);
-        */
-/**выравниваем поле ввода по правую сторону*//*
-
+        *выравниваем поле ввода по правую сторону
         JFormattedTextField dispFormattedTextField = new JFormattedTextField();
         dispFormattedTextField.setFont(font);
         dispFormattedTextField.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -116,10 +160,8 @@ public class AtmMenuServer extends JFrame {
         buttons.add(delete);
 
         windowForEnter.add("South", enter);
-        */
-/**для меню ввода паролья нет нужды в кнопке enter*//*
-
-        if (Controller.getInstance().getMenu().equals(Menu.PASSWORD)) {
+        *для меню ввода паролья нет нужды в кнопке enter
+        if (controller.getMenu().equals(Menu.PASSWORD)) {
             windowForEnter.remove(enter);
         }
         for (int i = 0; i < buttons.size() - 2; i++) {
@@ -134,75 +176,61 @@ public class AtmMenuServer extends JFrame {
 
                     String dispVal = dispFormattedTextField.getText();
 
-                    */
-/**если выбрано поле ввода пароля, необходимо дождаться ввода 4 цифр и передать на проверку в модель*//*
-
-                    if (Controller.getInstance().getMenu().equals(Menu.PASSWORD)) {
+                    *если выбрано поле ввода пароля, необходимо дождаться ввода 4 цифр и передать на проверку в модель
+                    if (controller.getMenu().equals(Menu.PASSWORD)) {
                         int passwordNumb = 0;
                         if (!"".equals(dispFormattedTextField)) {
                             passwordNumb = Integer.parseInt(dispVal);
                             if (dispVal.length() == 4) {
-                                */
-/**если пароль введен верно передать управление основному меню*//*
-
-                                if (Controller.getInstance().checkPassword(passwordNumb)) {
+                                *если пароль введен верно передать управление основному меню
+                                if (controller.checkPassword(passwordNumb)) {
                                     showMenu();
                                     windowForEnter.setVisible(false);
-                                    Controller.getInstance().setMenu(Menu.CANCEL);
+                                    controller.setMenu(Menu.CANCEL);
                                     return;
                                 }
-                                */
-/**если не верен пароль, вывести предупреждение, вернуть карту*//*
-
+                                *если не верен пароль, вывести предупреждение, вернуть карту
 
                                 JOptionPane incorrectPassword = new JOptionPane();
                                 incorrectPassword.showConfirmDialog(windowForEnter, "Incorrect password!\n Take your card!", "Incorrect Password", incorrectPassword.PLAIN_MESSAGE);
                                 windowForEnter.setVisible(false);
-                                Controller.getInstance().getAtm().removeCard();
-                                Controller.getInstance().setMenu(Menu.CANCEL);
+                                controller.getAtm().removeCard();
+                                controller.setMenu(Menu.CANCEL);
                                 insertCardWindow();
 
                             }
                         }
                     }
 
-                    */
-/**ввести значение и передать его в модель*//*
-
+                    *ввести значение и передать его в модель
                     enter.addActionListener(new ActionListener() {
                         @Override
                         public void actionPerformed(ActionEvent e) {
-                            */
-/**если выбрано меню внести наличные, то передать значение на счет*//*
-
-                            switch (Controller.getInstance().getMenu()) {
+                            *если выбрано меню внести наличные, то передать значение на счет
+                            switch (controller.getMenu()) {
                                 case DEPOSIT:
-                                    Controller.getInstance().getAtm().depositMoney(Float.parseFloat(dispFormattedTextField.getText()));
+                                    controller.getAtm().depositMoney(Float.parseFloat(dispFormattedTextField.getText()));
                                     windowForEnter.setVisible(false);
-                                    Controller.getInstance().setMenu(Menu.CANCEL);
+                                    controller.setMenu(Menu.CANCEL);
                                     break;
                                 case WITHDRAW:
-                                    if (Controller.getInstance().getAtm().withdraw(Float.parseFloat(dispVal))) {
+                                    if (controller.getAtm().withdraw(Float.parseFloat(dispVal))) {
                                         windowForEnter.setVisible(false);
                                         dispFormattedTextField.setText("0");
                                         JOptionPane jOptionPane = new JOptionPane();
                                         jOptionPane.showConfirmDialog(windowForEnter, "Take money:\n " + dispVal, "Take money", jOptionPane.PLAIN_MESSAGE);
-                                        */
-/**необходим для выхода из цикла проверок*//*
-
-                                        Controller.getInstance().setMenu(Menu.CANCEL);
+                                        *необходим для выхода из цикла проверок
+                                        controller.setMenu(Menu.CANCEL);
                                         break;
                                     } else {
                                         JOptionPane jOptionPane = new JOptionPane();
                                         jOptionPane.showConfirmDialog(windowForEnter, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
                                         dispFormattedTextField.setText("0");
-                                        Controller.getInstance().setMenu(Menu.CANCEL);
+                                        controller.setMenu(Menu.CANCEL);
                                         break;
                                     }
                                 case CANCEL:
-
                                     return;
-
                             }
                         }
                     });
@@ -219,15 +247,15 @@ public class AtmMenuServer extends JFrame {
                 }
             }
         });
-        for (int i = 0; i < buttons.size(); i++) {
-            buttonsPanel.add(buttons.get(i));
+        for (JButton button : buttons) {
+            buttonsPanel.add(button);
         }
         panel.add("Center", buttonsPanel);
         windowForEnter.add(panel);
         windowForEnter.setSize(400, 400);
         pack();
         windowForEnter.setVisible(true);
-    }
+    }*/
 
     public void insertCardWindow() {
         JFrame insertCard = new JFrame();
@@ -247,8 +275,8 @@ public class AtmMenuServer extends JFrame {
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Controller.getInstance().insertCard();
-                passwordEnter();
+                controller.insertCard();
+               // passwordEnter();
                 insertCard.setVisible(false);
             }
         });
@@ -257,64 +285,10 @@ public class AtmMenuServer extends JFrame {
         insertCard.setVisible(true);
     }
 
-    public void passwordEnter() {
-        Controller.getInstance().setMenu(Menu.PASSWORD);
+   /* public void passwordEnter() {
+        controller.setMenu(Menu.PASSWORD);
         windowEnterAmount("Password");
-    }
+    }*/
 
-    */
-/**меню выбора пользователя*//*
 
-    public void selectUserName(){
-        JFrame usersFrame = new JFrame();
-        usersFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        usersFrame.setTitle("Select Name");
-        usersFrame.setLocationRelativeTo(null);
-        Font font = new Font("Arial", Font.PLAIN, 20);
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        final JLabel label = new JLabel(" ");
-        label.setAlignmentX(LEFT_ALIGNMENT);
-        label.setFont(font);
-        usersFrame.add(label);
-        */
-/**сделать запрос в базе данных*//*
-
-        Controller.getInstance().getDataBase().selUsers(Controller.getInstance().getURL());
-        JComboBox userNameBox = new JComboBox(Controller.getInstance().getDataBase().getUsers());
-        userNameBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-        userNameBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                JComboBox box = (JComboBox) e.getSource();
-                String name = (String) box.getSelectedItem();
-                label.setText(name);
-                Controller.getInstance().setUserName(name);
-                 */
-/**окно выбора карт*//*
-
-                 JOptionPane selCard = new JOptionPane();
-                Controller.getInstance().getDataBase().selUserCard(Controller.getInstance().getURL(), Controller.getInstance().getUserName());
-                selCard.setInitialSelectionValue(Controller.getInstance().getDataBase().getUserCardNumbs());
-                String selectedCardNumber = (String) JOptionPane.showInputDialog
-                        (usersFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null, Controller.getInstance().getDataBase().getUserCardNumbs(), Controller.getInstance().getDataBase().getUserCardNumbs()[0]);
-                //System.err.println(Arrays.toString(Controller.getInstance().getDataBase().getUserCardNumbs()));
-                Controller.getInstance().setCardNumber(selectedCardNumber);
-                */
-/**инициализируем пользователя и карту*//*
-
-                Controller.getInstance().getBank().init();
-                usersFrame.setVisible(false);
-                insertCardWindow();
-
-            }
-        });
-        userNameBox.setFont(font);
-        panel.add(userNameBox);
-        usersFrame.add(panel);
-        usersFrame.setPreferredSize(new Dimension(300, 150));
-        usersFrame.pack();
-        usersFrame.setVisible(true);
-    }
 }
-*/

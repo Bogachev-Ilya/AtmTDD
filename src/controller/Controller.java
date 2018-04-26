@@ -22,12 +22,23 @@ public class Controller {
     private User user;
     private CreditCard creditCard;
     private Bank bank;
+    private Vector<String> usersName;
+    private Object[] userCardsList;
+    private boolean flag;
 
+    private volatile static Controller INSTANCE;
 
-    private Controller() {
+    private Controller() {}
+    public static Controller getInstance() {
+        if (INSTANCE ==null){
+            synchronized (Controller.class){
+                if (INSTANCE ==null){
+                    INSTANCE =new Controller();
+                }
+            }
+        }
+        return INSTANCE;
     }
-
-    private static final Controller INSTANCE = new Controller();
 
     public String getUserName() {
         return userName;
@@ -85,9 +96,7 @@ public class Controller {
         this.dataBase = dataBase;
     }
 
-    public static Controller getInstance() {
-        return INSTANCE;
-    }
+
 
     public boolean insertCard() {
         if (atm.insertCardGui(creditCard)) {
@@ -155,5 +164,29 @@ public class Controller {
 
     public void initAtm() {
         atm = new Atm();
+    }
+
+    public Vector<String> getUsersName() {
+        return usersName;
+    }
+
+    public void setUsersName(Vector<String> usersName) {
+        this.usersName = usersName;
+    }
+
+    public void setUserCardsList(Object[] userCardsList) {
+        this.userCardsList = userCardsList;
+    }
+
+    public Object[] getUserCardsList() {
+        return userCardsList;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+    public void setFlag(boolean flag) {
+        this.flag = flag;
     }
 }

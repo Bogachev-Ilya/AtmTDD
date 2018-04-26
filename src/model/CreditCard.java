@@ -1,6 +1,8 @@
 package model;
 
-public class CreditCard {
+import java.io.Serializable;
+
+public class CreditCard implements Serializable{
     private Float amount;
     private Integer password;
     private String cardType;

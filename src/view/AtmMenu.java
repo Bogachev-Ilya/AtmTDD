@@ -16,13 +16,13 @@ public class AtmMenu extends JFrame{
     private JButton deposit = new JButton("Deposit money");
     private JButton withdraw = new JButton("Withdraw");
     private Controller controller=Controller.getInstance();
-
+    private CardsDao cardsDao = new CardsDao();
 
     /**
      * служит для определения вызванного меню, для того, чтобы правильно релизовать методы снятия и внесения денег
      */
     public enum Menu {
-        WITHDRAW, DEPOSIT, CANCEL, PASSWORD
+        WITHDRAW, DEPOSIT, CANCEL, PASSWORD, TRANSFER
     }
 
     public void showMenu() {
@@ -32,10 +32,11 @@ public class AtmMenu extends JFrame{
         mainMenuFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         JPanel atmMenu = new JPanel();
         mainMenuFrame.add(atmMenu);
-        GridLayout gridLayout = new GridLayout(2, 2);
+        GridLayout gridLayout = new GridLayout(3, 2);
         atmMenu.setLayout(gridLayout);
         JButton checkBalance = new JButton("Check balance");
         JButton cancel = new JButton("Cancel");
+        JButton transfer = new JButton("Transfer");
         checkBalance.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,9 +48,8 @@ public class AtmMenu extends JFrame{
         cancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /**записываем сумму на карте в базу данных после всех операций*/
-                CardsDao cardsDao = new CardsDao();
-                /**получаем остаток по карте и номер карты для записи данных*/
+                /**записываем сумму на карте в базу данных после всех операций
+                *получаем остаток по карте и номер карты для записи данных*/
                 cardsDao.updateCardAmount(controller.getAtm().getCreditCard().getAmount(), controller.getAtm().getCreditCard().getCardNumber());                ;
                 controller.getAtm().removeCard();
                 setVisible(false);
@@ -71,13 +71,42 @@ public class AtmMenu extends JFrame{
                 controller.setMenu(Menu.DEPOSIT);
             }
         });
+
+        transfer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               /**отобразить поле карт для данного пользователя*/
+                /**окно выбора карт*/
+                JOptionPane selCard = new JOptionPane();
+                /**отобразить список карт для выбранного пользователя по iD*/
+                CardsDao cardsDao = new CardsDao();
+                /**создать массив карт для отображения в меню выбора*/
+                Object [] cardsListForUser = new Object[cardsDao.getCardsForUser(controller.getUser().getId(),
+                        controller.getUser().getCreditCardNumber()) .size()];
+                for (int i = 0; i < cardsListForUser.length; i++) {
+                    /**записать в массив номера карт пользователя*/
+                    cardsListForUser[i] = cardsDao.getAllCardsForUser(controller.getUser().getId()).get(i).getCardNumber();
+                }
+                selCard.setInitialSelectionValue(cardsDao.getAllCardsForUser(controller.getUser().getId()).get(0));
+                String selectedCardNumber = (String) JOptionPane.showInputDialog
+                        (mainMenuFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null,
+                                cardsListForUser, cardsListForUser[0]);
+                controller.setCardNumber(selectedCardNumber);
+                controller.setMenu(Menu.TRANSFER);
+                windowEnterAmount("Transfer");
+
+            }
+        });
+
         atmMenu.add(checkBalance);
         atmMenu.add(deposit);
         atmMenu.add(withdraw);
+        atmMenu.add(transfer);
         atmMenu.add(cancel);
         mainMenuFrame.pack();
         mainMenuFrame.setVisible(true);
     }
+
 
     private void windowEnterAmount(String menuName) {
         JFrame windowForEnter = new JFrame();
@@ -145,7 +174,6 @@ public class AtmMenu extends JFrame{
                                     return;
                                 }
                                 /**если не верен пароль, вывести предупреждение, вернуть карту*/
-
                                 JOptionPane incorrectPassword = new JOptionPane();
                                 incorrectPassword.showConfirmDialog(windowForEnter, "Incorrect password!\n Take your card!", "Incorrect Password", incorrectPassword.PLAIN_MESSAGE);
                                 windowForEnter.setVisible(false);
@@ -163,6 +191,25 @@ public class AtmMenu extends JFrame{
                         public void actionPerformed(ActionEvent e) {
                             /**если выбрано меню внести наличные, то передать значение на счет*/
                             switch (controller.getMenu()) {
+                                /**перевести деньги можно только с текущей карты на другие карты данного пользователя*/
+                                case TRANSFER:
+                                    /**убедиться что сумма списания не превышает сумму по карте*/
+                                    if (controller.getAtm().withdraw(Float.parseFloat(dispVal))) {
+                                        /**передать сумму в базу данных и записать на выбранную карту*/
+                                        cardsDao.updateCardAmount
+                                                (Float.parseFloat(dispFormattedTextField.getText()), controller.getCardNumber());
+                                        controller.setMenu(Menu.CANCEL);
+                                        windowForEnter.setVisible(false);
+                                        break;
+                                    }else {
+                                        JOptionPane jOptionPane = new JOptionPane();
+                                        jOptionPane.showConfirmDialog(windowForEnter, "Reduce amount and try again\n Balance on card:\n " + Controller.getInstance().getBalance() + "", "Balance", jOptionPane.PLAIN_MESSAGE);
+                                        dispFormattedTextField.setText("0");
+                                        windowForEnter.setVisible(false);
+                                        controller.setMenu(Menu.CANCEL);
+                                        break;
+
+                                    }
                                 case DEPOSIT:
                                     controller.getAtm().depositMoney(Float.parseFloat(dispFormattedTextField.getText()));
                                     windowForEnter.setVisible(false);
@@ -184,6 +231,7 @@ public class AtmMenu extends JFrame{
                                         controller.setMenu(Menu.CANCEL);
                                         break;
                                     }
+
                                 case CANCEL:
                                     return;
                             }
@@ -286,6 +334,7 @@ public class AtmMenu extends JFrame{
                         (usersFrame, "Select card number", "Card number", JOptionPane.QUESTION_MESSAGE, null,
                                 cardsListForUser, cardsListForUser[0]);
                 controller.setCardNumber(selectedCardNumber);
+                controller.getUser().setCreditCardNumber(selectedCardNumber);
                 /**создаем банк и передаем его в контроллер*/
                 controller.initBank();
                 /**инициализируем карту*/
