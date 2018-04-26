@@ -31,7 +31,7 @@ public class Client {
                 oos.writeUTF(controller.getUserName());
                 //получаем юзера от сервера и передаем его в контроллер
                 controller.setUser((User) objectIn.readObject());
-                    //тест
+                //тест
                 System.out.println("User name is " + controller.getUser().getName());
                 /**получить список карт от сервер передать их в контроллер для отображения*/
                 controller.setUserCardsList((Object[]) objectIn.readObject());
