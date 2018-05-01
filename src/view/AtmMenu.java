@@ -83,6 +83,12 @@ public class AtmMenu extends JFrame{
                 /**создать массив карт для отображения в меню выбора*/
                 Object [] cardsListForUser = new Object[cardsDao.getCardsForUser(controller.getUser().getId(),
                         controller.getUser().getCreditCardNumber()) .size()];
+                if (cardsListForUser.length==0){
+                        JOptionPane oneCard = new JOptionPane();
+                        oneCard.showConfirmDialog(mainMenuFrame, "You have only one card!\n Select other menu!", "Only one card selected", oneCard.PLAIN_MESSAGE);
+                        return;
+
+                }
                 for (int i = 0; i < cardsListForUser.length; i++) {
                     /**записать в массив номера карт пользователя*/
                     cardsListForUser[i] = cardsDao.getAllCardsForUser(controller.getUser().getId()).get(i).getCardNumber();
